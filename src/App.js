@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
 import Main from './components/Main.react.js';
 import Navigationmenu from './components/Nav.react.js';
-import { Button } from 'react-bootstrap';
+//import { Button } from 'react-bootstrap';
 
 
 class App extends Component {
@@ -11,14 +11,7 @@ class App extends Component {
     return (
       <div className="App">
         <Navigationmenu />
-        <img src={logo} className="App-logo" alt="logo" />
-        <Button
-                bsStyle="success"
-                bsSize="large"
-                href="http://react-bootstrap.github.io/components.html"
-                target="_blank">
-                View React Bootstrap Docs
-              </Button>
+        
         <Main />
       </div>
 
@@ -31,6 +24,10 @@ export default App;
 
 
 /*
+
+
+        <img src={logo} className="App-logo" alt="logo" />
+
 <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>

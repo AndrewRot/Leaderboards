@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+//import logo from './logo.svg';
 
 //import *  as ReactBootstrap from 'react-bootstrap';
 let Navbar = require("react-bootstrap/lib/Navbar");
@@ -13,16 +14,21 @@ let Button = require("react-bootstrap/lib/Button");
 
 //let require("react-bootstrap/lib/NavbarHeader");
 
+//add hrefs back in to link menus
+
 class Navigationmenu extends Component {
   render() {
     return (
       <div className="navbar">
         <Navbar inverse collapseOnSelect>
           <Navbar.Header>
-            <Navbar.Brand>
-              <a >Leaderboards</a>
+
+            <Navbar.Brand>  
+              <a > Leaderboards </a>
             </Navbar.Brand>
+            
             <Navbar.Toggle />
+
           </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
@@ -35,7 +41,7 @@ class Navigationmenu extends Component {
               <MenuItem eventKey={3.3}>Other APIS</MenuItem>
             </NavDropdown>
           </Nav>
-          
+
           <Navbar.Form pullRight>
             <FormGroup>
               <FormControl type="text" placeholder="Search" />
