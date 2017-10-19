@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 //import logo from './logo.svg';
 
+
 //import *  as ReactBootstrap from 'react-bootstrap';
 let Navbar = require("react-bootstrap/lib/Navbar");
 let NavItem = require("react-bootstrap/lib/NavItem");
@@ -10,7 +11,6 @@ let MenuItem = require("react-bootstrap/lib/MenuItem");
 let FormGroup = require("react-bootstrap/lib/FormGroup");
 let FormControl = require("react-bootstrap/lib/FormControl");
 let Button = require("react-bootstrap/lib/Button");
-
 
 //let require("react-bootstrap/lib/NavbarHeader");
 
@@ -24,7 +24,7 @@ class Navigationmenu extends Component {
           <Navbar.Header>
 
             <Navbar.Brand>  
-              <a > Leaderboards </a>
+              <a href="/Main"> Leaderboards </a>
             </Navbar.Brand>
             
             <Navbar.Toggle />
@@ -32,10 +32,10 @@ class Navigationmenu extends Component {
           </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <NavItem eventKey={1} >Browse</NavItem>
-            <NavItem eventKey={2} >My Boards</NavItem>
+            <MenuItem eventKey={1} href="/LeaderboardMain">Browse</MenuItem>
+            <MenuItem eventKey={2} >My Boards</MenuItem>
             <NavDropdown eventKey={3} title="Docs" id="basic-nav-dropdown">
-              <MenuItem eventKey={3.1}>APIs</MenuItem>
+              <MenuItem eventKey={3.1}  >APIs</MenuItem>
               <MenuItem eventKey={3.2}>More APIs</MenuItem>
               <MenuItem divider />
               <MenuItem eventKey={3.3}>Other APIS</MenuItem>

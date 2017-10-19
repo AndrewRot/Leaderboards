@@ -11,19 +11,27 @@ class App extends Component {
     return (
       <div className="App">
         <Navigationmenu />
-        
+        <h1> Browse </h1>
         <Main />
       </div>
-
-
     );
   }
 }
+
+
 
 export default App;
 
 
 /*
+ what was in return before
+
+
+ <Router history={hashHistory}>
+        <Route path='/' component={Yo} />
+        <Route path='/address' component={LeaderboardMain} />
+      </Router>
+      
 
 
         <img src={logo} className="App-logo" alt="logo" />
