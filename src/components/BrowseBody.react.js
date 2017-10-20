@@ -17,7 +17,7 @@ function Square(props) {
 }
 
 
-class Main extends Component {
+class BrowseBody extends Component {
 
 	constructor() {
     super();
@@ -62,7 +62,7 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default BrowseBody;
 
 
 

@@ -1,9 +1,13 @@
+/** Created by Andrew Rottier
+  * This is where the homepage content should go
+  */
+
+
 import React, { Component } from 'react';
 //import logo from './logo.svg';
 import './App.css';
-import Main from './components/Main.react.js';
+import HomePageBody from './components/HomePageBody.react.js';
 import Navigationmenu from './components/Nav.react.js';
-//import { Button } from 'react-bootstrap';
 
 
 class App extends Component {
@@ -11,8 +15,8 @@ class App extends Component {
     return (
       <div className="App">
         <Navigationmenu />
-        <h1> Browse </h1>
-        <Main />
+        
+        <HomePageBody />
       </div>
     );
   }
@@ -21,33 +25,3 @@ class App extends Component {
 
 
 export default App;
-
-
-/*
- what was in return before
-
-
- <Router history={hashHistory}>
-        <Route path='/' component={Yo} />
-        <Route path='/address' component={LeaderboardMain} />
-      </Router>
-      
-
-
-        <img src={logo} className="App-logo" alt="logo" />
-
-<header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-         <Button
-                bsStyle="success"
-                bsSize="large"
-                href="http://react-bootstrap.github.io/components.html"
-                target="_blank">
-                View React Bootstrap Docs
-              </Button>
-*/

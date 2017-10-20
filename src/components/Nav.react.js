@@ -24,7 +24,7 @@ class Navigationmenu extends Component {
           <Navbar.Header>
 
             <Navbar.Brand>  
-              <a href="/Main"> Leaderboards </a>
+              <a href="/"> Leaderboards </a>
             </Navbar.Brand>
             
             <Navbar.Toggle />
@@ -32,14 +32,18 @@ class Navigationmenu extends Component {
           </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <MenuItem eventKey={1} href="/LeaderboardMain">Browse</MenuItem>
-            <MenuItem eventKey={2} >My Boards</MenuItem>
+            <MenuItem eventKey={1} href="/Browse">Browse</MenuItem>
+            <MenuItem eventKey={2} href="/LeaderboardMain">My Boards</MenuItem>
             <NavDropdown eventKey={3} title="Docs" id="basic-nav-dropdown">
               <MenuItem eventKey={3.1}  >APIs</MenuItem>
               <MenuItem eventKey={3.2}>More APIs</MenuItem>
               <MenuItem divider />
               <MenuItem eventKey={3.3}>Other APIS</MenuItem>
             </NavDropdown>
+          </Nav>
+
+          <Nav pullRight>
+            <MenuItem eventKey={4} href="/UserProfile">Login</MenuItem>
           </Nav>
 
           <Navbar.Form pullRight>
@@ -49,6 +53,8 @@ class Navigationmenu extends Component {
             {' '}
             <Button type="submit">Submit</Button>
           </Navbar.Form>
+
+            
 
           
 

@@ -1,0 +1,13 @@
+.img-slider {
+
+    height: auto;
+    width: 100%;
+     display: block;
+    margin: 0 auto;
+}
+
+.media {
+	margin-top: 40px;
+	margin-left: 10%;
+	margin-right: 10%;
+}
