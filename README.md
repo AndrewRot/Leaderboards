@@ -9,7 +9,10 @@ npm install body-parser
 npm install mongodb
 npm install express
 npm install monk
-npm install axios  //http requests
+npm install react-axios  //http requests might not use
+npm install --save react-http-request
+npm install react-xhr
+npm install url
 
 *Just a general note, if the program every throws an error saying:
 Error: Cannot find module <XXX>

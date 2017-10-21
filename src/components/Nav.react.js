@@ -43,7 +43,8 @@ class Navigationmenu extends Component {
           </Nav>
 
           <Nav pullRight>
-            <MenuItem eventKey={4} href="/UserProfile">Login</MenuItem>
+            <MenuItem eventKey={4} href="/User">Login</MenuItem>
+            <MenuItem eventKey={4.1} href="/SignUp">Sign Up</MenuItem>
           </Nav>
 
           <Navbar.Form pullRight>

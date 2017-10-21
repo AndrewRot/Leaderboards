@@ -1,22 +1,69 @@
 import React, { Component } from 'react';
+//import Request from 'react-http-request';
+import { findDOMNode } from 'react-dom';
+
+import axios from 'axios';
+import $ from 'jquery';
+
+
 //import {Grid, Row, Col, Thumbnail, Button, Carousel, Media} from 'react-bootstrap';
 import './UserProfileBody.css';
 //import './UserProfileBody.js';
 
+
+
+function UserGreeting(props) {
+  return <h1>Welcome back!</h1>;
+}
+
+function GuestGreeting(props) {
+  return <h1>Please sign up.</h1>;
+}
+
+function Greeting(props) {
+  const isLoggedIn = props.isLoggedIn;
+  if (isLoggedIn) {
+    return <UserGreeting />;
+  }
+  return <GuestGreeting />;
+}
+
+function LoginButton(props) {
+  return (
+    <button onClick={props.onClick}>
+      Login
+    </button>
+  );
+}
+
+function LogoutButton(props) {
+  return (
+    <button onClick={props.onClick}>
+      Logout
+    </button>
+  );
+}
+
 //This file is just using the regular bootstrap css file. Not fancy pants react-bootstraps here
 class UserProfileBody extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      posts: []
-    };
-  }
   
+
+   
   render() {
+
+
+  
     return (
-      <div className="navbar">
+      
+
+
+      <div className="class" onLoad={this.handleLoad}>
+
+
+     
+    
+
        <div class="col-lg-6 col-sm-6">
         <div class="card hovercard">
             <div class="card-background">
