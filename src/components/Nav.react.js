@@ -12,12 +12,49 @@ let FormGroup = require("react-bootstrap/lib/FormGroup");
 let FormControl = require("react-bootstrap/lib/FormControl");
 let Button = require("react-bootstrap/lib/Button");
 
-//let require("react-bootstrap/lib/NavbarHeader");
 
-//add hrefs back in to link menus
+
+function LoginButton() {
+  return (
+    <div>
+    <Nav>
+    <MenuItem eventKey={4} href="/User">Login</MenuItem>
+    <MenuItem eventKey={4.1} href="/SignUp">Sign Up</MenuItem>
+    </Nav>
+    </div>
+  );
+}
+
+function LogoutButton() {
+  return (
+    <div>
+    <Nav>
+    <MenuItem eventKey={4.2} href="/SignOut">Logout</MenuItem>
+    </Nav>
+    </div>
+  );
+}
 
 class Navigationmenu extends Component {
+
+
+
   render() {
+
+    let isLoggedIn = (getCookie("loggedin") == "true") ? true:false;
+    console.log("isLoggedIn: "+ isLoggedIn);
+    let NAVPORTAL = null;
+
+    //if logged in, display mini welcome on nav bar   
+    if (isLoggedIn) {
+      NAVPORTAL = <LogoutButton />;
+    } 
+    //otherwise prompt the user to sign in or login
+    else {
+      NAVPORTAL = <LoginButton  />;
+    }
+    
+
     return (
       <div className="navbar">
         <Navbar inverse collapseOnSelect>
@@ -43,8 +80,7 @@ class Navigationmenu extends Component {
           </Nav>
 
           <Nav pullRight>
-            <MenuItem eventKey={4} href="/User">Login</MenuItem>
-            <MenuItem eventKey={4.1} href="/SignUp">Sign Up</MenuItem>
+            {NAVPORTAL}
           </Nav>
 
           <Navbar.Form pullRight>
@@ -70,41 +106,21 @@ class Navigationmenu extends Component {
 export default Navigationmenu;
 
 
-/*
-
-class Nav extends Component {
-  render() {
-    return (
-      <div className="navigation">
-        asdasd
-      </div>
-    );
-  }
+//return value from the cookie
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          var str = c.substring(name.length, c.length);
+          //console.log("found it: "+str);
+            return str;
+        }
+    }
+    return "";
 }
-
-<Navbar inverse collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <a >React-Bootstrap</a>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav>
-            <NavItem eventKey={1} >Link</NavItem>
-            <NavItem eventKey={2} >Link</NavItem>
-            <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
-              <MenuItem eventKey={3.1}>Action</MenuItem>
-              <MenuItem eventKey={3.2}>Another action</MenuItem>
-              <MenuItem eventKey={3.3}>Something else here</MenuItem>
-              <MenuItem divider />
-              <MenuItem eventKey={3.3}>Separated link</MenuItem>
-            </NavDropdown>
-          </Nav>
-          <Nav pullRight>
-            <NavItem eventKey={1} >Link Right</NavItem>
-            <NavItem eventKey={2} >Link Right</NavItem>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar> 
-*/

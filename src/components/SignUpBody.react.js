@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 //import Request from 'react-http-request';
 //import axios from 'axios';
-import { findDOMNode } from 'react-dom';
 
 import $ from 'jquery';
 
@@ -66,6 +65,7 @@ class SignUpBody extends Component {
     };
   }
 
+  //Write methods for this component here
   handleLoginClick() {
     this.setState({isLoggedIn: true});
   }
@@ -99,21 +99,15 @@ class SignUpBody extends Component {
           alert("Response from server was ["+status+"] and the data:  " + data);
           //now assign this to the proper variables in react component
           console.log("Response from server was ["+status+"] and the data:  " + data);
-              
+              //use json.parse to make it into a js object - might need this in server!
     });
 
     event.preventDefault();
   }
 
   render() {
+    
     const isLoggedIn = this.state.isLoggedIn;
-
-    let button = null;
-    if (isLoggedIn) {
-      button = <LogoutButton onClick={this.handleLogoutClick} />;
-    } else {
-      button = <LoginButton onClick={this.handleLoginClick} />;
-    }
 
     return (
       <div>
@@ -145,10 +139,9 @@ class SignUpBody extends Component {
             <input type="text" name="password" value={this.state.password} onChange={this.handleChange} />
           </label>
           <br />
-          <input type="submit" username="Submit" />
+          <input type="submit" name="Submit" />
         </form>
 
-        {button}
       </div>
     );
   

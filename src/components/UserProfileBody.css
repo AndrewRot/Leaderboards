@@ -79,3 +79,9 @@
 .btn-pref .btn {
     -webkit-border-radius:0 !important;
 }
+
+.form {
+    padding: 60px 0;
+    margin: 0 auto;
+    max-width: 50%;
+}

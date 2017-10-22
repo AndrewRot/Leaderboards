@@ -14,6 +14,9 @@ npm install --save react-http-request
 npm install react-xhr
 npm install url
 
+//Check out express-sessions for user authenitcation
+//also check at passport - aparently better
+
 *Just a general note, if the program every throws an error saying:
 Error: Cannot find module <XXX>
 just run the command

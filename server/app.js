@@ -65,7 +65,7 @@ app.post('/login',(req,res) =>{
   var email=req.body.email;
   var password=req.body.password;
 
-  console.log("NEW USER: userid = "+userid+", first "+first+", last "+last+", username "+username+", email "+email+", password "+password);
+  //console.log("NEW USER: userid = "+userid+", first "+first+", last "+last+", username "+username+", email "+email+", password "+password);
   
   //Insert this data into our database
   var accounts = db.collection('accounts');
@@ -76,11 +76,11 @@ app.post('/login',(req,res) =>{
       resolve("successful insert");   
   });
   p1.then(function(response) {
-    console.log(response);
+    //console.log(response);
     //send back data
     //res.end("end");
   }, function(reason) {
-    console.log("fail: "+reason); // Error!
+    //console.log("fail: "+reason); // Error!
   });
  
   //res.setHeader('Content-Type', 'application/json');
@@ -127,7 +127,8 @@ app.get('/login',(req,res) =>{
 
   p1.then(function(value) {
           
-    console.log("Data found: "+JSON.stringify(value)); // Success!
+    console.log("Data found JSON stringify: "+JSON.stringify(value)); // Success!
+    //console.log("Data found untouched: "+value); // Success!
     res.end(JSON.stringify(value));
 
     }, function(reason) {
@@ -169,7 +170,7 @@ app.post('/User', (req, res) =>{
 app.get('*', (req, res) => {
   console.log("req.path: "+ req.path +   " ... req.url: "+ req);
 
-	// **** CODE FOR SETTING UP MONGO ***********************
+	// **** CODE FOR SETTING UP MONGO *********************** WOrking - now we dont really need this
 	//This section will and should be moved else where.. just here now for setting up Mongo DB
 	var collection = db.collection('accounts');
   
@@ -180,7 +181,7 @@ app.get('*', (req, res) => {
 
       count.each(function(err, item) {
         if(item != null){
-          console.log(item.username + ", First: " + item.first + ", Last: " + item.last);
+          //console.log(item.username + ", First: " + item.first + ", Last: " + item.last);
         }
         
       });
@@ -190,8 +191,8 @@ app.get('*', (req, res) => {
 	p1.then(function(count) {
 
 
-	    console.log("Andrew: "+ count);
-      console.log("Andrew: "+ JSON.stringify(count));
+	    //console.log("Andrew: "+ count);
+      //console.log("Andrew: "+ JSON.stringify(count));
 	    //res.end(JSON.stringify(value)   );
 	    //send back data
 	    //res.end("end");
