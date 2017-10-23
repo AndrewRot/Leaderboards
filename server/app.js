@@ -145,31 +145,61 @@ app.get('/leaderboard',(req,res) =>{
   console.log("URL: "+ req.url );
 
   //parse our url to get the fields we want
-  //Starting URL: /leaderboard?company=testboard
+  //Starting URL: /leaderboard?company=testboard&stat=score
   var uri = req.url.replace("/leaderboard?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
   var uri = uri.replace(/company=/i, ''); //strip out the email and password name fields
-  
-  //Desired, variables holding individual strings
-  var company=uri;
+  var uri = uri.replace(/stat=/i, ''); //strip out the email and password name fields
+  //gablergab&dude%40wpi.edu
+  var uri = uri.split('&');
 
-  console.log("company = "+company);
+
+  //Desired, variables holding individual strings
+  var company=uri[0];
+  var statType=uri[1];
+
+  console.log("company = "+company + " stat type = "+statType);
   //hold on to the fields returned by the query
-  //var userinfo = [{}];
   var collection = db.collection(company);
 
   //now run our query on the database with the username and password
   var p1 = new Promise(function(resolve, reject) {
+    
+    //**** Later on we will want to insert in an order so we dont have to sort now - this will take a long time if there is a lot of data. if the collection is already sorted, it will only take o(1) to grab the first 10 elements
     //run query
-    let document = collection.find().limit(3).toArray();  //convert to array then to json so we can handle it
+    /*let document = collection.find()
+                              .sort({ "score": -1}) //sort by score in descending order
+                              .limit(3).toArray();  //convert to array then to json so we can handle it
+    */
+
+    //To allow dynamic sorting in mongo
+    var sortObject = {};
+    var stype = statType;//req.params.sorttype;
+    var sdir = -1;//req.params.sortdirection;
+    sortObject[stype] = sdir; //now pass sort object as an argument to where we search below
+    //test.find().sort(sortObject)
+
+    //join specificed table with accounts table
+    let document = collection.aggregate([
+    { $lookup: //essentially a join
+       {
+         from: 'accounts', //from what table
+         localField: 'userid', //bind on this local field
+         foreignField: 'userid', //bind on this foreign field from from
+         as: 'userinfo' //insert into an array named this
+       }
+     }, 
+     {'$sort' : sortObject}  //eventually make ascending/descending a filter as well (-1, 1)
+    ]).limit(15).toArray(); //***eventually make limit value a filter
+
+
+
     resolve(document); //pass the arrray to our resolve statement
 
     
   });
 
   p1.then(function(value) {   
-  //console.log(" Returned data: "+value); 
-    console.log("Data found JSON stringify: "+JSON.stringify(value)); // Success!
-    //console.log("Data found untouched: "+value); // Success!
+    //console.log("Data found JSON stringify: "+JSON.stringify(value)); // Success!
     res.end(JSON.stringify(value));
     }, function(reason) {
       console.log("fail: "+reason); // Error!
