@@ -53,7 +53,6 @@ class MainSignOut extends Component {
     	);
     }
 
-    
   }
 }
 

@@ -84,53 +84,37 @@ class SignInPage extends Component {
   render() {
       return (
         <div>
-        <h1> Sign in </h1>
-      <form onSubmit={this.handleSubmit} class="form"  >
-          
-          <FormGroup controlId="email" bsSize="large" >
-            <ControlLabel>Email</ControlLabel>
-            <FormControl
-              autoFocus
-              name="email"
-              type="text"
-              value={this.state.email}
-              onChange={this.handleChange} />
-          </FormGroup>
-          <FormGroup controlId="password" bsSize="large">
-            <ControlLabel>Password</ControlLabel>
-            <FormControl
-              value={this.state.password}
-              onChange={this.handleChange}
-              name="password"
-              type="password" />
-          </FormGroup>
-         
-          <Button block bsSize="large" disabled={!this.validateForm()} type="submit" >
-            Login
-          </Button>
-        </form>
-        
-      </div>
-
-        )
-    
+          <h1> Sign in </h1>
+            <form onSubmit={this.handleSubmit} class="form"  >
+                
+                <FormGroup controlId="email" bsSize="large" >
+                  <ControlLabel>Email</ControlLabel>
+                  <FormControl
+                    autoFocus
+                    name="email"
+                    type="text"
+                    value={this.state.email}
+                    onChange={this.handleChange} />
+                </FormGroup>
+                <FormGroup controlId="password" bsSize="large">
+                  <ControlLabel>Password</ControlLabel>
+                  <FormControl
+                    value={this.state.password}
+                    onChange={this.handleChange}
+                    name="password"
+                    type="password" />
+                </FormGroup>
+               
+                <Button block bsSize="large" disabled={!this.validateForm()} type="submit" >
+                  Login
+                </Button>
+              </form>
+            
+            </div>
+    )
   }
 }
 
-
-
-/*
-<label>
-            email: 
-            <input type="text" name="email" value={this.state.email} onChange={this.handleChange} />
-          </label>
-          <br />
-          <label>
-            password: 
-            <input type="text" name="password" value={this.state.password} onChange={this.handleChange} />
-          </label>
-          <br />
-*/
 
 
 

@@ -65,14 +65,19 @@ app.post('/login',(req,res) =>{
   var email=req.body.email;
   var password=req.body.password;
 
-  //console.log("NEW USER: userid = "+userid+", first "+first+", last "+last+", username "+username+", email "+email+", password "+password);
+  var city=req.body.city;
+  var zip=req.body.zip;
+  var state=req.body.state;
+  var country=req.body.country;
+
+  console.log("NEW USER: userid = "+userid+", first "+first+", last "+last+", username "+username+", email "+email+", password "+password +", city "+city +", zip "+zip +", state "+state +", country "+country);
   
   //Insert this data into our database
   var accounts = db.collection('accounts');
   
   //In order to query a mongo db, we need to create a Promise 
   var p1 = new Promise(function(resolve, reject) {
-      accounts.save( { userid: userid, first: first, last: last, username: username, email:email, password:password }); //alternatively use insert instead of save for none persistance
+      accounts.save( { userid: userid, first: first, last: last, username: username, email:email, password:password, city:city, zip:zip, state:state, country:country}); //alternatively use insert instead of save for none persistance
       resolve("successful insert");   
   });
   p1.then(function(response) {
