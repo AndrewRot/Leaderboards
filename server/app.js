@@ -7,6 +7,8 @@ const morgan = require('morgan');
 const path = require('path');
 const app = express();
 var qs = require('querystring');
+//const mongoHelpers = require('./mongoHelpers');
+var async = require('async');
 
 
 // **** CODE FOR SETTING UP MONGO ***********************
@@ -56,39 +58,39 @@ app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
 
 
 /* Handle post requests from the client */
-app.post('/login',(req,res) =>{
+app.post('/signup',(req,res) =>{
   //grab the elements sent from the user
-  var userid= 5; //We are going to have to eventually make this unique and globally incremental, but 5 is fine for now
+  let userid= 1; //We are going to have to eventually make this unique and globally incremental, but 5 is fine for now
   var first=req.body.first;
   var last=req.body.last;
   var username=req.body.username;
   var email=req.body.email;
   var password=req.body.password;
-
   var city=req.body.city;
   var zip=req.body.zip;
   var state=req.body.state;
   var country=req.body.country;
 
-  console.log("NEW USER: userid = "+userid+", first "+first+", last "+last+", username "+username+", email "+email+", password "+password +", city "+city +", zip "+zip +", state "+state +", country "+country);
-  
-  //Insert this data into our database
   var accounts = db.collection('accounts');
-  
-  //In order to query a mongo db, we need to create a Promise 
-  var p1 = new Promise(function(resolve, reject) {
-      accounts.save( { userid: userid, first: first, last: last, username: username, email:email, password:password, city:city, zip:zip, state:state, country:country}); //alternatively use insert instead of save for none persistance
-      resolve("successful insert");   
+  //generate new userID to use ***** move this to a mongohelper file
+  var p = new Promise(  function(resolve, reject) {
+    //get the number of users in the db, but dont move on until this uqery is done!
+    accounts.count({}, function (error, count) {
+      //increment the count by 1 each time
+      let nextUserID = count+1;
+      resolve(nextUserID);
+      console.log("error: "+error + " nextUserID: "+nextUserID);
+    });
   });
-  p1.then(function(response) {
-    //console.log(response);
-    //send back data
-    //res.end("end");
+  p.then(function(response) { // success
+    
+    accounts.save( { userid: response, first: first, last: last, username: username, email:email, password:password, city:city, zip:zip, state:state, country:country}); //alternatively use insert instead of save for none persistance
+    //console.log("NEW USER: userid = "+response+", first "+first+", last "+last+", username "+username+", email "+email+", password "+password +", city "+city +", zip "+zip +", state "+state +", country "+country);
+    res.status(200).send('Good');
   }, function(reason) {
-    //console.log("fail: "+reason); // Error!
+    console.log("failed to generate new unique userID: "+reason); // Error!
+    res.status(400).send('Error');
   });
- 
-  //res.setHeader('Content-Type', 'application/json');
   res.end("yes");
 });
 
@@ -109,59 +111,71 @@ app.get('/login',(req,res) =>{
   //gablergab&dude%40wpi.edu
   var uri = uri.split('&'); //now we have an array of the email and password
   //Desired, variables holding individual strings
-
   var email=uri[0].replace(/%40/i, '@'); //conver this back to %40
   var password=uri[1];
 
   console.log("email = "+email+", password = "+password);
-
   //hold on to the fields returned by the query
   var userinfo = [{}];
-
 
   //now run our query on the database with the username and password
   var p1 = new Promise(function(resolve, reject) {
     //run query
-    
     db.collection('accounts').findOne({ $and: [{email:  email}, {password: password }]}, function(err, document) {
-        console.log(document.username + " has logged in");
+        //console.log(document.username + " has logged in");
         resolve(document);
       });
-   
     });
 
-  p1.then(function(value) {
-          
+  p1.then(function(value) {    
     console.log("Data found JSON stringify: "+JSON.stringify(value)); // Success!
     //console.log("Data found untouched: "+value); // Success!
     res.end(JSON.stringify(value));
-
     }, function(reason) {
       console.log("fail: "+reason); // Error!
       //fill in res.end with error
     });
-
   //res.end("yes");
 });
 
 
 
-// routes will go here
-//tell express what to do when the /about route is requested
-app.post('/User', (req, res) =>{
-  console.log("4 ***********post body: "+ req + "  " + res);
-  var body = ''
-  //console.log("Handling Search");
-  req.on('data', function(d) {
-    body += d;
-  })
-    req.on('end', function(d) {
-      var post = qs.parse( body )
+//When we load the leaderboard page!
+app.get('/leaderboard',(req,res) =>{
+  console.log("URL: "+ req.url );
 
-      console.log("post body: "+ post);
+  //parse our url to get the fields we want
+  //Starting URL: /leaderboard?company=testboard
+  var uri = req.url.replace("/leaderboard?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+  var uri = uri.replace(/company=/i, ''); //strip out the email and password name fields
+  
+  //Desired, variables holding individual strings
+  var company=uri;
 
+  console.log("company = "+company);
+  //hold on to the fields returned by the query
+  //var userinfo = [{}];
+  var collection = db.collection(company);
 
-  })
+  //now run our query on the database with the username and password
+  var p1 = new Promise(function(resolve, reject) {
+    //run query
+    let document = collection.find().limit(3).toArray();  //convert to array then to json so we can handle it
+    resolve(document); //pass the arrray to our resolve statement
+
+    
+  });
+
+  p1.then(function(value) {   
+  //console.log(" Returned data: "+value); 
+    console.log("Data found JSON stringify: "+JSON.stringify(value)); // Success!
+    //console.log("Data found untouched: "+value); // Success!
+    res.end(JSON.stringify(value));
+    }, function(reason) {
+      console.log("fail: "+reason); // Error!
+      //fill in res.end with error
+    });
+  //res.end("yes");
 });
 
 

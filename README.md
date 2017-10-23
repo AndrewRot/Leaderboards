@@ -13,6 +13,7 @@ npm install react-axios  //http requests might not use
 npm install --save react-http-request
 npm install react-xhr
 npm install url
+npm install --save async //have multiple queries - wait on result of each other - mongo async helper
 
 //Check out express-sessions for user authenitcation
 //also check at passport - aparently better

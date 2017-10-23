@@ -97,7 +97,7 @@ class SignUpBody extends Component {
     const country = this.state.country;
 
     //Successful posts and gets with jquery!
-    $.post("http://localhost:9000/login",{first: first, last: last, username: user, email: email, password: password, city: city, zip: zip, state: state, country: country}, function(data){
+    $.post("http://localhost:9000/signup",{first: first, last: last, username: user, email: email, password: password, city: city, zip: zip, state: state, country: country}, function(data){
            
                 alert("Sign up success: "+data);
             
@@ -112,6 +112,8 @@ class SignUpBody extends Component {
               //use json.parse to make it into a js object - might need this in server!
     });*/
 
+  //***** Update this later so that it goes to the second page of sign up stuff
+    window.location="/Browse"; //reroute user to browse leaderboards -
     event.preventDefault();
   }
 
@@ -189,7 +191,7 @@ class SignUpBody extends Component {
 
           <FormGroup controlId="city" bsSize="large" >
             <ControlLabel>City</ControlLabel>
-            <FormControl componentClass="select" placeholder="Boston" value={this.state.city} onChange={this.handleChange}>
+            <FormControl componentClass="select" name="city"  value={this.state.city} onChange={this.handleChange}>
             {cityList.map(function(name){
               return <option value={name}>{name}</option>
               })}
@@ -199,7 +201,7 @@ class SignUpBody extends Component {
 
           <FormGroup controlId="state" bsSize="large" >
             <ControlLabel>State</ControlLabel>
-            <FormControl componentClass="select" placeholder="MA" value={this.state.state} onChange={this.handleChange}>
+            <FormControl componentClass="select" name="state"  value={this.state.state} onChange={this.handleChange}>
             {stateList.map(function(name){
               return <option value={name}>{name}</option>
               })}
@@ -209,7 +211,7 @@ class SignUpBody extends Component {
 
           <FormGroup controlId="country" bsSize="large" >
             <ControlLabel>Country</ControlLabel>
-            <FormControl componentClass="select" placeholder="United States" value={this.state.country} onChange={this.handleChange}>
+            <FormControl componentClass="select" name="country"  value={this.state.country} onChange={this.handleChange}>
             {countryList.map(function(name){
               return <option value={name}>{name}</option>
               })}
