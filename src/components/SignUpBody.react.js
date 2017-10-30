@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './SignUpBody.css';
 import { Button, ButtonToolbar, MenuItem, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import FacebookButton from './FacebookButton.react';
+
 
 import $ from 'jquery';
 
@@ -123,6 +125,12 @@ class SignUpBody extends Component {
     return x.first.length > 0 && x.last.length > 0 && x.username.length > 0 && x.email.length > 0 && x.zip.length > 0;
   }
 
+  componentWillMount() {
+    console.log("Init page");
+    //window.checkLoginState();
+  }
+
+
   render() {
     
     const isLoggedIn = this.state.isLoggedIn;
@@ -153,8 +161,16 @@ class SignUpBody extends Component {
       <div>
         <h1>Sign up for Leaderboards!</h1>
 
+        <div
+        class="fb-login-button"
+        data-max-rows="1"
+        data-size="large"
+        data-button-type="continue_with"
+        data-onlogin="checkLoginState();"
+        ></div>
 
-        <form onSubmit={this.handleSubmit} class="form"  >
+
+        <form onSubmit={this.handleSubmit } class="form"  >
                 
           <FormGroup controlId="first" bsSize="large" >
             <ControlLabel>First Name</ControlLabel>
@@ -243,6 +259,7 @@ export default SignUpBody;
 
 
 /*
+        <div class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="true" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email" data-onlogin="checkLoginState();"></div>
 
 
           <form onSubmit={this.handleSubmit}>

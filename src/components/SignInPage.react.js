@@ -3,19 +3,6 @@ import $ from 'jquery';
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import './UserProfileBody.css';
 
-//write to the actual cookie
-export function updateCookie(convertedData){
-    var d = new Date();
-    d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
-    var expires = "expires="+ d.toUTCString();
-    document.cookie =  "firstname=" + convertedData.first;
-          document.cookie = "lastname=" + convertedData.last;
-          document.cookie = "username=" + convertedData.username;
-          document.cookie = "email=" + convertedData.email ;
-          document.cookie = "loggedin=true";
-          document.cookie = expires;
-          document.cookie = "path=/";
-}
 
 //This file is just using the regular bootstrap css file. Not fancy pants react-bootstraps here
 class SignInPage extends Component {
@@ -34,6 +21,9 @@ class SignInPage extends Component {
       username: '',
       email: '',
       password: '',
+      city: '',
+      state: '',
+      country: '',
     };
   }
     //Write methods for this component here
@@ -52,26 +42,23 @@ class SignInPage extends Component {
           //now assign this to the proper variables in react component
           console.log("Response from server was ["+status+"] and the data:  " + data);
           
-          //**** I should check to see what the status code is, if it fails we wanna stop here
+          //comes back in form of array of objects. so we need to reference the first index
 
           //convert response to js object
           const convertedData = JSON.parse(data);
+          console.log("Name: "+convertedData[0].firstName); 
+          console.log("Last: "+convertedData[0].lastName); 
+          console.log("Username: "+convertedData[0].username); 
 
           //write to our cookie!
-          updateCookie(convertedData);
+          updateCookie(convertedData[0]); //not working properly
           console.log(document.cookie);
 
 
-          //Updating component state values
-          this.setState({first: convertedData.first});
-          this.setState({last: convertedData.last});
-          this.setState({username: convertedData.username});
-          this.setState({email: convertedData.email});
- 
-
+          
     });
     //refresh the page, it will now load out user profile
-    window.location="/User";
+    //window.location="/User";
     event.preventDefault();
 
   }
@@ -82,6 +69,9 @@ class SignInPage extends Component {
   }
 
   render() {
+
+
+
       return (
         <div>
           <h1> Sign in </h1>
@@ -115,6 +105,24 @@ class SignInPage extends Component {
   }
 }
 
+//write to the actual cookie
+export function updateCookie(convertedData){
+    var d = new Date();
+    d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = "userID=" + convertedData.userID;
+    document.cookie = "firstname=" + convertedData.firstName;
+    document.cookie = "lastname=" + convertedData.lastName;
+    document.cookie = "username=" + convertedData.username;
+    document.cookie = "email=" + convertedData.email ;
+    document.cookie = "city=" + convertedData.city ;
+    document.cookie = "state=" + convertedData.state ;
+    document.cookie = "country=" + convertedData.country ;
+    //document.cookie = "password=" + convertedData.password ;
+    document.cookie = "loggedin=true";
+    document.cookie = expires;
+    document.cookie = "path=/";
+}
 
 
 

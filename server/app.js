@@ -7,6 +7,9 @@ const morgan = require('morgan');
 const path = require('path');
 const app = express();
 var qs = require('querystring');
+var tools = require("./sqlHelpers.js");
+
+
 //const mongoHelpers = require('./mongoHelpers');
 var async = require('async');
 
@@ -24,21 +27,32 @@ var monk = require('monk');
 var qs = require('querystring');
 
 
-//[From other project] We need to work with "MongoClient" interface in order to connect to a mongodb server.
-var MongoClient = mongodb.MongoClient;
+//******* MY SQL ************************************************
+var mysql = require('mysql');
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : 'password',
+  database : 'leaderboards'
+ });
 
+connection.connect(function(err){
+ if(!err) {
+     console.log("Database is connected ... \n\n");  
+ } else {
+     console.log("Error connecting database ... \n\n");  
+ }
+ });
 
-var db;
-MongoClient.connect(url, function (err, db1) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    console.log('Connection established to', url);
-    db = db1;
-}});
-//*******************************************************
+//WORKING!
+/*connection.query('SELECT * FROM accounts', function (err, rows, fields) {
+  if (err) throw err
 
+  console.log('The solution is: ', rows[0])
+})
+*/
 
+//***************
 
 
 // Setup logger
@@ -60,7 +74,7 @@ app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
 /* Handle post requests from the client */
 app.post('/signup',(req,res) =>{
   //grab the elements sent from the user
-  let userid= 1; //We are going to have to eventually make this unique and globally incremental, but 5 is fine for now
+  let userid= 4; //We are going to have to eventually make this unique and globally incremental, but 5 is fine for now
   var first=req.body.first;
   var last=req.body.last;
   var username=req.body.username;
@@ -70,36 +84,44 @@ app.post('/signup',(req,res) =>{
   var zip=req.body.zip;
   var state=req.body.state;
   var country=req.body.country;
+  var token= '123';
 
-  var accounts = db.collection('accounts');
-  //generate new userID to use ***** move this to a mongohelper file
-  var p = new Promise(  function(resolve, reject) {
-    //get the number of users in the db, but dont move on until this uqery is done!
-    accounts.count({}, function (error, count) {
-      //increment the count by 1 each time
-      let nextUserID = count+1;
-      resolve(nextUserID);
-      console.log("error: "+error + " nextUserID: "+nextUserID);
-    });
-  });
-  p.then(function(response) { // success
-    
-    accounts.save( { userid: response, first: first, last: last, username: username, email:email, password:password, city:city, zip:zip, state:state, country:country}); //alternatively use insert instead of save for none persistance
-    //console.log("NEW USER: userid = "+response+", first "+first+", last "+last+", username "+username+", email "+email+", password "+password +", city "+city +", zip "+zip +", state "+state +", country "+country);
-    res.status(200).send('Good');
-  }, function(reason) {
-    console.log("failed to generate new unique userID: "+reason); // Error!
-    res.status(400).send('Error');
-  });
-  res.end("yes");
+  //Converting to mySQL
+  //Create Query string to pass
+  //insert into Accounts values(1, 'Andrew', 'Rottier', 'acrottier', 'andrewrottier95@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123');
+  // will want to convert this into a method somehow
+  var query = "insert into Accounts values(" +userid+",'"+first+"','"+last+"','"+username+"','"+email+"','"+password+"','"+city+"','"+state+"','"+country+"','"+token+"');";
+  console.log("QUERY:" +query);
+  connection.query(query, function (err, rows, fields) {
+    if (err) throw err
+
+    console.log('Inserted: ', rows)
+  })
+  res.status(200).send('Good');
+});
+
+
+//Post an update. The user as followed a board! probably name the table something, push name of board
+app.post('/followboard',(req,res) =>{
+  let userid=parseInt(req.body.userid);  //user to add board to and convert it to an integer
+  let boardToFollow=req.body.board; //this should be the string of the board we wanna push to accounts.boards array
+  console.log("userid: "+userid+" Board to follow: "+boardToFollow);
+  //insert into BoardAccountLink values(1, 1);
+  var query = "insert into BoardAccountLink values(" +userid+","+boardToFollow+");";
+  console.log("QUERY:" +query);
+  connection.query(query, function (err, rows, fields) {
+    if (err) throw err
+
+    console.log('Inserted: ', rows)
+  })
+  res.status(200).send('Good');
 });
 
 
 
 
 
-
-/* Handle get requests from the client */
+/* Handle get login requests from the client */
 app.get('/login',(req,res) =>{
   console.log("URL: "+ req.url );
 
@@ -115,97 +137,168 @@ app.get('/login',(req,res) =>{
   var password=uri[1];
 
   console.log("email = "+email+", password = "+password);
-  //hold on to the fields returned by the query
-  var userinfo = [{}];
+  
+  var query = "Select * from Accounts where email = '"+ email + "' and password = '"+password+"'";
+  console.log("QUERY:" +query);
+  connection.query(query, function (err, rows, fields) {
+    if (err) throw err
 
-  //now run our query on the database with the username and password
-  var p1 = new Promise(function(resolve, reject) {
-    //run query
-    db.collection('accounts').findOne({ $and: [{email:  email}, {password: password }]}, function(err, document) {
-        //console.log(document.username + " has logged in");
-        resolve(document);
-      });
-    });
+    console.log('User Info: ', JSON.stringify(rows));
+    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
+  })
+});
 
-  p1.then(function(value) {    
-    console.log("Data found JSON stringify: "+JSON.stringify(value)); // Success!
-    //console.log("Data found untouched: "+value); // Success!
-    res.end(JSON.stringify(value));
-    }, function(reason) {
-      console.log("fail: "+reason); // Error!
-      //fill in res.end with error
-    });
-  //res.end("yes");
+//Verify that a facebook token is valid
+app.get('/verify',(req,res) =>{
+  console.log("URL: "+ req.url );
+  //parse our url to get the fields we want
+  //Starting URL: /verify?token=123siodfn9u23nr1&userid=12345321
+  var uri = req.url.replace("/verify?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+  var uri = uri.replace(/token=/i, ''); //strip out the email and password name fields
+  var uri = uri.replace(/userid=/i, ''); //strip out the email and password name fields
+  //gablergab&dude%40wpi.edu
+  var uri = uri.split('&'); //now we have an array of the email and password
+  //Desired, variables holding individual strings
+  var token=uri[0]; //this is the access token
+  var userid=uri[1];
+
+  console.log("Access Token = "+token+", userID = "+userid);
+  
+  //How do we know what to store, who to store it with?
+
+  res.end("Verified end");
 });
 
 
 
-//When we load the leaderboard page!
-app.get('/leaderboard',(req,res) =>{
-  console.log("URL: "+ req.url );
+//fetchboards from the database for the browse page
+app.get('/fetchboards',(req,res) =>{
+   var query = "Select * from Boards limit 9";
+  console.log("QUERY:" +query);
+  connection.query(query, function (err, rows, fields) {
+    if (err) throw err
+    console.log('Fetched boards: ', JSON.stringify(rows));
+    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
+  })
+});
 
-  //parse our url to get the fields we want
-  //Starting URL: /leaderboard?company=testboard&stat=score
-  var uri = req.url.replace("/leaderboard?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
-  var uri = uri.replace(/company=/i, ''); //strip out the email and password name fields
-  var uri = uri.replace(/stat=/i, ''); //strip out the email and password name fields
+//getmy board info getmyboardinfo
+app.get('/getmyboardinfo',(req,res) =>{
+  console.log("/URL: "+ req.url );
+  var uri = req.url.replace("/getmyboardinfo?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+  var uri = uri.replace(/userid=/i, ''); //strip out the email and password name fields
   //gablergab&dude%40wpi.edu
-  var uri = uri.split('&');
+  //Desired, variables holding individual strings
+  var userid=uri; 
 
+   var query = "Select * from BoardAccountLink BAL, Boards B where userID ="+userid + " and B.boardID = BAL.boardID";
+  console.log("QUERY:" +query);
+  connection.query(query, function (err, rows, fields) {
+    if (err) throw err
+    console.log('Fetched boards: ', JSON.stringify(rows));
+    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
+  })
+});
+
+
+
+
+app.get('/getBoardStats',(req,res) =>{
+  console.log("URL: "+ req.url );
+  //parse our url to get the fields we want
+  //Starting URL: /getBoardStats?boardID=1
+  var uri = req.url.replace("/getBoardStats?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+  var uri = uri.replace(/boardID=/i, ''); //strip out
 
   //Desired, variables holding individual strings
-  var company=uri[0];
-  var statType=uri[1];
+  var boardID=uri;
+  console.log("boardID = "+boardID);
 
-  console.log("company = "+company + " stat type = "+statType);
-  //hold on to the fields returned by the query
-  var collection = db.collection(company);
-
-  //now run our query on the database with the username and password
-  var p1 = new Promise(function(resolve, reject) {
-    
-    //**** Later on we will want to insert in an order so we dont have to sort now - this will take a long time if there is a lot of data. if the collection is already sorted, it will only take o(1) to grab the first 10 elements
-    //run query
-    /*let document = collection.find()
-                              .sort({ "score": -1}) //sort by score in descending order
-                              .limit(3).toArray();  //convert to array then to json so we can handle it
-    */
-
-    //To allow dynamic sorting in mongo
-    var sortObject = {};
-    var stype = statType;//req.params.sorttype;
-    var sdir = -1;//req.params.sortdirection;
-    sortObject[stype] = sdir; //now pass sort object as an argument to where we search below
-    //test.find().sort(sortObject)
-
-    //join specificed table with accounts table
-    let document = collection.aggregate([
-    { $lookup: //essentially a join
-       {
-         from: 'accounts', //from what table
-         localField: 'userid', //bind on this local field
-         foreignField: 'userid', //bind on this foreign field from from
-         as: 'userinfo' //insert into an array named this
-       }
-     }, 
-     {'$sort' : sortObject}  //eventually make ascending/descending a filter as well (-1, 1)
-    ]).limit(15).toArray(); //***eventually make limit value a filter
+  var query = "Select * from Scores S where S.boardID = "+boardID + " GROUP BY S.scoreID";
+  console.log("QUERY:" +query);
+  connection.query(query, function (err, rows, fields) {
+    if (err) throw err
+    console.log('Fetched board statTypes: ', JSON.stringify(rows));
+    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
+  })
+});
 
 
+//When we load the leaderboard page based on filters from the filter section!
+app.get('/leaderboard',(req,res) =>{
+  console.log("URL: "+ req.url );
+  var uri = req.url.replace("/leaderboard?", '').replace(/%20/i, ' ');//replace space char with a space; //strip out the path  //username=gablergab&email=dude%40wpi.edu
+  var uri = uri.replace(/boardID=/i, ''); //strip out
+  var uri = uri.replace(/scoreID=/i, ''); //strip out
+  var uri = uri.replace(/statTime=/i, ''); //strip out
+  var uri = uri.replace(/statLocation=/i, ''); //strip out
+  var uri = uri.replace(/userID=/i, ''); //strip out
+  var uri = uri.replace(/city=/i, ''); //strip out
+  var uri = uri.replace(/state=/i, ''); //strip out
+  var uri = uri.replace(/country=/i, ''); //strip out
 
-    resolve(document); //pass the arrray to our resolve statement
+  //***** add user id to this maybe here
+  var uri = uri.split('&');
 
-    
-  });
+  //Desired, variables holding individual strings
+  var boardID=uri[0];
+  var scoreID=uri[1];
+  var statTime=uri[2];
+  var statLocation=uri[3];
+  var userID=uri[4];
+  var city=uri[5];
+  var state=uri[6];
+  var country=uri[7];
+  //Generate locational segment of the query
+  var locationalQuery = " ";//be default lets load this data globally (that means no content here)
+  switch(statLocation) {
+    case "City":
+      locationalQuery = " and A."+statLocation+" = '"+ city+"' ";
+      break;
+    case "State":
+      locationalQuery = " and A."+statLocation+" = '"+ state+"' ";
+      break;
+    case "Country":
+      locationalQuery = " and A."+statLocation+" = '"+ country+"' ";
+      break;
+  }
 
-  p1.then(function(value) {   
-    //console.log("Data found JSON stringify: "+JSON.stringify(value)); // Success!
-    res.end(JSON.stringify(value));
-    }, function(reason) {
-      console.log("fail: "+reason); // Error!
-      //fill in res.end with error
-    });
-  //res.end("yes");
+  //Should do the same thing with time
+  var timeQuery = " ";//be default lets load this data all-time (that means no content here)
+  switch(statTime) {
+    case "Daily":
+    //post_modified > DATE_SUB(CURDATE(), INTERVAL 4 WEEK);
+      timeQuery = " and S.time >  DATE_SUB(CURDATE(), INTERVAL 1 DAY) ";
+      break;
+    case "Weekly":
+      timeQuery =" and S.time >  DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ";
+      break;
+    case "Monthly":
+      timeQuery = " and S.time >  DATE_SUB(CURDATE(), INTERVAL 4 WEEK) ";
+      break;
+  }
+
+
+  //console.log("boardID: "+boardID+ " scoreID: "+scoreID+ " statType: "+statType+" statTime: "+statTime+" statLocation: "+statLocation+" userID: "+userID + " city: "+city+" state: "+state+" country: "+country);
+
+  //This is going to have to be updated to use more filters, probably a few consecutive queries or lots of joins
+  //Select all the scores from the given board's selected statType/scoreID. 
+  var query = "Select firstName, lastName, username, score, city, state, country, time  "+
+               "from Scores S, Accounts A "+
+               " where S.scoreID = "+scoreID+
+                locationalQuery + //select the type of locational based info
+                timeQuery + //select the type of time based info
+               " and S.boardID = "+ boardID+ 
+               " and S.userID = A.userID "+ 
+               " ORDER BY score DESC";
+
+  console.log("QUERY:" +query);
+  connection.query(query, function (err, rows, fields) {
+    if (err) throw err
+    //console.log('Leaderboard data fetched: ', JSON.stringify(rows));
+    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
+  })
+
 });
 
 
@@ -217,40 +310,7 @@ app.get('/leaderboard',(req,res) =>{
 
 // Always return the main index.html, so react-router render the route in the client
 app.get('*', (req, res) => {
-  console.log("req.path: "+ req.path +   " ... req.url: "+ req);
-
-	// **** CODE FOR SETTING UP MONGO *********************** WOrking - now we dont really need this
-	//This section will and should be moved else where.. just here now for setting up Mongo DB
-	var collection = db.collection('accounts');
-  
-    //In order to query a mongo db, we need to create a Promise 
-   	var p1 = new Promise(function(resolve, reject) {
-
-	    var count = db.collection('accounts').find({first: "Andrew"}); 
-
-      count.each(function(err, item) {
-        if(item != null){
-          //console.log(item.username + ", First: " + item.first + ", Last: " + item.last);
-        }
-        
-      });
-
-	    resolve(count); //resolving this adds count to our variable p1
-	});
-	p1.then(function(count) {
-
-
-	    //console.log("Andrew: "+ count);
-      //console.log("Andrew: "+ JSON.stringify(count));
-	    //res.end(JSON.stringify(value)   );
-	    //send back data
-	    //res.end("end");
-      //res.send({count})
-
-	 }, function(reason) {
-	    console.log("fail: "+reason); // Error!
-	 });
-	//*******************************************************
+  //console.log("req.path: "+ req.path +   " ... req.url: "+ req);
 
 
    	//This handles every page request. Directs the user to index.html, everything is rendered from there

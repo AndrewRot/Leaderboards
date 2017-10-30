@@ -14,13 +14,18 @@ export function updateCookie(convertedData){
     var d = new Date();
     d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
     var expires = "expires="+ d.toUTCString();
-    document.cookie =  "firstname=" + convertedData.first;
-          document.cookie = "lastname=" + convertedData.last;
-          document.cookie = "username=" + convertedData.username;
-          document.cookie = "email=" + convertedData.email ;
-          document.cookie = "loggedin=true";
-          document.cookie = expires;
-          document.cookie = "path=/";
+    document.cookie = "userID=" + convertedData.userID;
+    document.cookie = "firstname=" + convertedData.firstName;
+    document.cookie = "lastname=" + convertedData.lastName;
+    document.cookie = "username=" + convertedData.username;
+    document.cookie = "email=" + convertedData.email ;
+    document.cookie = "city=" + convertedData.city ;
+    document.cookie = "state=" + convertedData.state ;
+    document.cookie = "country=" + convertedData.country ;
+    //document.cookie = "password=" + convertedData.password ;
+    document.cookie = "loggedin=true";
+    document.cookie = expires;
+    document.cookie = "path=/";
   }
 
 function getCookie(cname) {
@@ -50,8 +55,8 @@ class UserProfileBody extends Component {
     super(props);
     //function bindings
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    
+    //this.handleSubmit = this.handleSubmit.bind(this);
+
     //fields
     this.state = {
       //dont really use these anymore //change this to look at the cookie for
@@ -60,6 +65,7 @@ class UserProfileBody extends Component {
       username: '',
       email: '',
       password: '',
+      boards: [],
     };
   }
     //Write methods for this component here
@@ -70,20 +76,17 @@ class UserProfileBody extends Component {
 
  
   //Handle what happens when a user tries to log in
-  handleSubmit(event) {
-    const email = this.state.email;
-    const password = this.state.password;
+  /*componentWillMount() {
+    const email = getCookie("email");
+    const password = getCookie("password");
 
     $.get("http://localhost:9000/login",{email: email, password: password}, (data, status) => {
-          //alert("Response from server was ["+status+"] and the data:  " + data);
           //now assign this to the proper variables in react component
           console.log("Response from server was ["+status+"] and the data:  " + data);
           
-          //**** I should check to see what the status code is, if it fails we wanna stop here
-
           //convert response to js object
           const convertedData = JSON.parse(data);
-          console.log("Just the name: "+ convertedData.first);
+          console.log("Found data for : "+ convertedData.username);
 
           //write to our cookie!
           updateCookie(convertedData);
@@ -94,20 +97,25 @@ class UserProfileBody extends Component {
           this.setState({last: convertedData.last});
           this.setState({username: convertedData.username});
           this.setState({email: convertedData.email});
-
+          this.setState({boards: convertedData.boards}); //this might not be OK - might wanna just save boards in the cookie
     });
-    event.preventDefault();
   }
-
+*/
 
   render() {
     let USERNAME = getCookie("username");
-    let FIRSTNAME = getCookie("firstname");
-    let LASTNAME = getCookie("lastname");
+    let FIRSTNAME = getCookie("firstName");
+    let LASTNAME = getCookie("lastName");
     let EMAIL = getCookie("email");
 
+    let CITY = getCookie("city");
+    let STATE = getCookie("state");
+    let COUNTRY = getCookie("country");
+
+    let BOARDS = this.state.boards; //will have to be from cookie -> and then all of this will have to be pulled from DB
+
       return (
-        <div className="class" onLoad={this.handleLoad}>
+        <div className="class" >
           <div class="col-lg-12 col-sm-12">
             <div class="card hovercard">
               <div class="card-background">
@@ -144,6 +152,10 @@ class UserProfileBody extends Component {
                  <h3>Name: {FIRSTNAME} {LASTNAME} </h3>
                  <br />
                  <h3>Email: {EMAIL} </h3>
+                 <br />
+                 <h4> Location:   {CITY}, {STATE}, {COUNTRY} </h4>
+                 <br />
+                 <h4> Boards: {BOARDS} </h4>
                 </div>
                 <div class="tab-pane fade in" id="tab2">
                   <h3>This is tab 2</h3>

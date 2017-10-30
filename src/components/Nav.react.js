@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import FacebookProvider, { Login } from 'react-facebook';
+//import FacebookLogin from 'react-facebook-login';
+
 //import logo from './logo.svg';
 
 
@@ -12,15 +15,21 @@ let FormGroup = require("react-bootstrap/lib/FormGroup");
 let FormControl = require("react-bootstrap/lib/FormControl");
 let Button = require("react-bootstrap/lib/Button");
 
-
+ //<fb:login-button scope="public_profile,email,user_about_me,user_location" onlogin="checkLoginState();"> Login
+        //</fb:login-button>
 
 function LoginButton() {
   return (
     <div>
-    <Nav>
-    <MenuItem eventKey={4} href="/User">Login</MenuItem>
-    <MenuItem eventKey={4.1} href="/SignUp">Sign Up</MenuItem>
-    </Nav>
+      <Nav>
+
+           
+
+
+
+        <MenuItem eventKey={4} href="/User">Login</MenuItem>
+        <MenuItem eventKey={4.1} href="/SignUp">Sign Up</MenuItem>
+      </Nav>
     </div>
   );
 }
@@ -28,9 +37,10 @@ function LoginButton() {
 function LogoutButton() {
   return (
     <div>
-    <Nav>
-    <MenuItem eventKey={4.2} href="/SignOut">Logout</MenuItem>
-    </Nav>
+      <Nav>
+        <MenuItem eventKey={4.3} href="/User">My Profile</MenuItem>
+        <MenuItem eventKey={4.2} href="/SignOut">Logout</MenuItem>
+      </Nav>
     </div>
   );
 }
@@ -38,6 +48,12 @@ function LogoutButton() {
 class Navigationmenu extends Component {
 
 
+  responseFacebook(response) {
+      console.log(response);
+    }
+  handleError = (error) => {
+    this.setState({ error });
+  }
 
   render() {
 
@@ -47,7 +63,7 @@ class Navigationmenu extends Component {
 
     //if logged in, display mini welcome on nav bar   
     if (isLoggedIn) {
-      NAVPORTAL = <LogoutButton />;
+      NAVPORTAL =  <LogoutButton />;
     } 
     //otherwise prompt the user to sign in or login
     else {

@@ -28,15 +28,137 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/<react-version>/react.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/<react-version>/react-dom.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/<version>/react-bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+
+
 <script>
 var Alert = ReactBootstrap.Alert;
 </script>
     <title>React App</title>
   </head>
   <body>
-    <noscript>
+
+    <script>
+
+     // This is called with the results from from FB.getLoginStatus().
+  /*function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    // The response object is returned with a status field that lets the
+    // app know the current login status of the person.
+    // Full docs on the response object can be found in the documentation
+    // for FB.getLoginStatus().
+    if (response.status === 'connected') {
+      var token = response.authResponse.accessToken;
+      var userid = response.authResponse.userID;
+      // Logged into your app and Facebook.
+      console.log("accessToken: "+token);
+      console.log("useriD: "+userid);
+      testAPI();
+      updateCookie(token, userid);
+
+      //now we want to send this information to the server
+       $.get("http://localhost:9000/verify",{token: token, userid: userid}, function(data){
+           
+                alert("Verified: "+data);
+            
+       });
+
+    } else {
+      // The person is not logged into your app or we are unable to tell.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
+
+         //log user in
+       FB.login(function(response) {
+        if (response.status === 'connected') {
+          // Logged into your app and Facebook.
+          console.log("accessToken: "+response.authResponse.accessToken);
+          console.log("useriD: "+response.authResponse.userID);
+          testAPI();
+          updateCookie(response.authResponse.accessToken, response.authResponse.userID);
+        } else {
+          // The person is not logged into this app or we are unable to tell. 
+        }
+      }, {scope: 'email,user_likes, public_profile, user_location'});
+
+
+    }
+  }
+
+  // This function is called when someone finishes with the Login
+  // Button.  See the onlogin handler attached to it in the sample
+  // code below.
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+
+
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '112583146173545',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.10'
+    });
+      
+    FB.AppEvents.logPageView();   
+      
+     //FB.getLoginStatus(function(response) {
+    //  statusChangeCallback(response);
+    //  });
+
+
+  };
+  
+
+  // Here we run a very simple test of the Graph API after login is
+  // successful.  See statusChangeCallback() for when this call is made.
+  function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Response first: ' + response.first_name);
+      console.log('Successful login for: ' + response.name);
+      document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '!';
+    });
+  }
+
+  function updateCookie(token, userid){
+    //var d = new Date();
+    //d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
+    //var expires = "expires="+ d.toUTCString();
+    document.cookie =  "accessToken=" + token;
+    document.cookie = "userID=" + userid;
+  
+  }*/
+
+  </script>
+
+  <div id="fb-root"></div>
+  <script>
+/*
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=112583146173545';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+*/
+
+
+  </script> 
+
+
+   <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
+    <div id="status"></div>
     <div id="navbar"></div>
     <div id="root"></div>
     <!--

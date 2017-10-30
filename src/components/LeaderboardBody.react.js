@@ -26,10 +26,23 @@ class LeaderboardBody extends Component {
 
     this.state = { 
       title: 'Default',
-      company: 'testboard', //this is the name of the collection we want to query
-      //This shit will have to be encapsulated inside of an array or data container
-      statType: 'score', //used to hold teh value of the current drop down value
+      company: '', //this is the name of the collection we want to query
+      //companyID: 0, //company identifier --not using anymroe
+
+      //statType: 0, //used to hold the scoreID of the statType drop down not using anymore?
+      statTime: 'All Time',
+      statLocation: 'Global',
+      scoreID: 1,
+
       sortedStatType: 'score', //update this value after the search returns,
+
+      userid: getCookie('userid'),
+      email: getCookie('email'),
+      password: getCookie('password'),
+
+      boardID: 1,
+      boards: [],
+      statTypes: [], //fill this with the boardID's statTypes
 
       rows: [{ userid: 1, score: 0,  userinfo: [{ username: ''}] }], //initialize this array with the proper structure
 
@@ -50,76 +63,94 @@ class LeaderboardBody extends Component {
   }
 
    handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    console.log("Updating: "+event.target.name+" to be: "+event.target.value );
+    this.setState({ [event.target.name]: event.target.value }, this.fetchBoardStats); 
   }
+
+  //if the screen has been updated, check to update the board stats
+  fetchBoardStats() {
+    let boardID = this.state.boardID;
+    //console.log("boardID post: "+boardID);
+
+    //if it is the boardID that changed, we need to get this board's stats
+    $.get("http://localhost:9000/getBoardStats",{boardID: boardID}, (data, status) => {
+          //console.log("Response from server was ["+status+"] and the data:  " + data);
+          //returns boardID, scoreID, scoreName
+          const convertedData = JSON.parse(data);     //convert response to js object
+          //populate our statTypes array with the returned data array
+          this.setState({statTypes: convertedData}) //boardID, scoreID, scoreName
+          //this.setState({scoreID: convertedData[0].scoreID}) //update the scoreID
+    });
+  }
+
  
   //Handle what happens when a user tries to log in
   handleSubmit(event) {
-    const company = this.state.company;
-    const stat = this.state.statType;
+    const boardID = this.state.boardID;
+    const scoreID = this.state.scoreID;
+    const statTime = this.state.statTime;
+    const statLocation = this.state.statLocation;
+    const userID = getCookie('userID');
+    const city = getCookie('city');
+    const state = getCookie('state');
+    const country = getCookie('country');
 
-    //will have to update this URL later (or just /login ?)
-    $.get("http://localhost:9000/leaderboard",{company: company, stat: stat}, (data, status) => {
+    //console.log("boardID: "+boardID+ " scoreID: "+scoreID+ " statType: "+statType+" statTime: "+statTime+" statLocation: "+statLocation+" userID: "+userID + " city: "+city+" state: "+state+" country: "+country);
 
+    $.get("http://localhost:9000/leaderboard",{boardID: boardID, scoreID: scoreID, statTime: statTime, statLocation: statLocation, userID: userID, city: city, state: state, country: country}, (data, status) => {
+          //now assign this to the proper variables in react component
+          //console.log("Response from server was ["+status+"] and the data:  " + data);
+          
+          //convert response to js object
+          const convertedData = JSON.parse(data);
+       
+          //populate our rows array with the returned data array
+          this.setState({rows: convertedData})
+    });
+    //refresh the page maybe to load the new query info?
+
+    //update the sorted state type, this cahnges our tables after the query is done
+    //this.setState({sortedStatType: stat});
+    event.preventDefault();
+  }
+
+  //Load up the user's boards at the beginning
+  componentWillMount() {
+    const userid = getCookie("userid");
+
+    $.get("http://localhost:9000/getmyboardinfo",{userid: userid}, (data, status) => {
           //now assign this to the proper variables in react component
           console.log("Response from server was ["+status+"] and the data:  " + data);
           
-          //**** I should check to see what the status code is, if it fails we wanna stop here
-
           //convert response to js object
           const convertedData = JSON.parse(data);
-          //returns data in the following strucutre:
-          /*
-            [{"_id":"59ee199418f266e07b239d17",
-              "userid":1,
-              "score":500,
-              "company":"testcompany",
-              "userinfo":[{"_id":"59edff793ddc65ba3a211e06",
-                           "userid":1,
-                           "first":"Andrew",
-                           "last":"Rottier",
-                           "username":"OJoj",
-                           "email":"andrewrottier95@gmail.com",
-                           "password":"password",
-                           "city":"Boston",
-                           "zip":"01609",
-                           "state":"MA",
-                           "country":"United States"}]}, ...
-          */
-          console.log("userid: "+convertedData[0].userid + " score is "+convertedData[0].score + " username is "+ convertedData[0].userinfo[0].username)
-          console.log("userid: "+convertedData[1].userid + " score is "+convertedData[1].score + " username is "+ convertedData[1].userinfo[0].username)
-          console.log("userid: "+convertedData[2].userid + " score is "+convertedData[2].score + " username is "+ convertedData[2].userinfo[0].username) 
-          
-          //Updating component state values *** UPDATE TO A LOOP
+          //console.log("Found data for : "+ convertedData);
 
-          //populate our rows array with the returned data array
-          this.setState({rows: convertedData})
-      
- 
+          //Updating component state values
+          this.setState({boards: convertedData});
 
+          //update the current company/board with the first from the list
+          this.setState({company: convertedData[0].name}) //make this change when drop down changes
+          //this.setState({scoreID: convertedData[0].scoreID})
+          this.setState({boardID: convertedData[0].boardID}, this.fetchBoardStats) //use fetchBoardStats as a callback when boardID loads.
     });
-    //refresh the page maybe to load the new query info?
-    //window.location="/User";
 
-    //update the sorted state type, this cahnges our tables after the query is done
-    this.setState({sortedStatType: stat});
-    event.preventDefault();
-
+    //we may also wanna do a query here to get the first board's associated scores - join with scoreboardlinker
+     console.log("Boards found...");
   }
 
 
   //queries will be based off of the selected filters.. probably should omit a bunchof these and just start with basics.
   render() {
 
-    let rows = this.state.rows;
-    let statType = this.state.statType;
-    let sortedStatType = this.state.sortedStatType;
-    //rows.push(EmptyRow);
+    let boards = this.state.boards;
+    let statTypes = this.state.statTypes; //This has to update whenever the boardID is updated
 
+    let rows = this.state.rows;
+    let scoreID = this.state.scoreID; //might not need...
+    let sortedStatType = this.state.sortedStatType;
 
     //we want to populate the form with the database fields
-
-
     return (
       <div className="class">
 
@@ -133,18 +164,29 @@ class LeaderboardBody extends Component {
             <form onSubmit={this.handleSubmit}  >
 
             <FormGroup controlId="formControlsSelect">
+              <ControlLabel>Select Board</ControlLabel>
+              <FormControl componentClass="select" placeholder="Board" name="boardID" value={this.state.boardID} onChange={this.handleChange}>
+                {boards.map(function(board, i){
+                  return (<option value={board.boardID}>{board.name}</option>)
+                  })}
+              </FormControl>
+            </FormGroup>
+           
+
+            <FormGroup controlId="formControlsSelect">
               <ControlLabel>Stat</ControlLabel>
-              <FormControl componentClass="select" placeholder="Score" name="statType" value={this.state.statType} onChange={this.handleChange}>
-                <option value="score">Score</option>
-                <option value="goals">Goals</option>
-                <option value="assists">Assists</option>
-                <option value="gamesplayed">Games Played</option>
+              <FormControl componentClass="select" placeholder="Score" name="scoreID" value={this.state.scoreID} onChange={this.handleChange}>
+                 {statTypes.map(function(stat, i){
+                  return (<option value={stat.scoreID}>{stat.scoreName}</option>)
+                  })}
+
+              
               </FormControl>
             </FormGroup>
 
              <FormGroup controlId="formControlsSelect">
               <ControlLabel>Time</ControlLabel>
-              <FormControl componentClass="select" placeholder="Daily">
+              <FormControl componentClass="select" placeholder="All Time" name="statTime" value={this.state.statTime} onChange={this.handleChange}>
                 <option value="Daily">Daily</option>
                 <option value="Weekly">Weekly</option>
                 <option value="Monthly">Monthly</option>
@@ -154,7 +196,7 @@ class LeaderboardBody extends Component {
 
             <FormGroup controlId="formControlsSelect">
               <ControlLabel>Area</ControlLabel>
-              <FormControl componentClass="select" placeholder="City">
+              <FormControl componentClass="select" placeholder="Global" name="statLocation" value={this.state.statLocation} onChange={this.handleChange}>
                 <option value="City">City</option>
                 <option value="State">State</option>
                 <option value="Country">Country</option>
@@ -185,6 +227,7 @@ class LeaderboardBody extends Component {
               {this.renderBoardHeading("City")}
               {this.renderBoardHeading("State")}
               {this.renderBoardHeading("Country")}
+              {this.renderBoardHeading("Date")}
             </tr>
           </thead>
           <tbody>
@@ -193,12 +236,13 @@ class LeaderboardBody extends Component {
               return (
               <tr> 
                   <td>{i+1}</td>
-                  <td>{row.userinfo[0].first} {row.userinfo[0].last} </td>
-                  <td>{row.userinfo[0].username} </td>
-                  <td>{row[sortedStatType]} </td>
-                  <td> {row.userinfo[0].city} </td>
-                  <td> {row.userinfo[0].state} </td>
-                  <td> {row.userinfo[0].country} </td>
+                  <td>{row.firstName} {row.lastName} </td>
+                  <td>{row.username} </td>
+                  <td>{row.score} </td>
+                  <td> {row.city} </td>
+                  <td> {row.state} </td>
+                  <td> {row.country} </td>
+                  <td> {row.time} </td>
               </tr>)
 
               })}
@@ -216,11 +260,40 @@ class LeaderboardBody extends Component {
   }
 }
 
+
+
+
 export default LeaderboardBody;
 
 
+
+
+function getCookie(cname) {
+  //console.log("Looking in cookie for: "+cname);
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          var str = c.substring(name.length, c.length);
+          //console.log("found it: "+str);
+            return str;
+        }
+    }
+    //console.log("Did not find it");
+    return "";
+}
+
 /*
 
+<option value="score">Score</option>
+                <option value="goals">Goals</option>
+                <option value="assists">Assists</option>
+                <option value="gamesplayed">Games Played</option>
 
 
 {rows.map(function(r, i){
