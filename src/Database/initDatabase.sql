@@ -34,9 +34,9 @@ create table Boards(
 	imgURL varchar(50),
 	PRIMARY KEY (boardID)
 );
-insert into Boards values(1, 'Fantasy Soccer', 'Fantasy soccer, goals, assists, other stats', '/images/fantasysoccer.png');
-insert into Boards values(2, 'Netflix', 'Netflix movies watched', '/images/netflix.png');
-insert into Boards values(3, 'Github', 'Lines of code committed', '/images/github.png');
+insert into Boards values(1, 'Fantasy Soccer', 'Fantasy soccer, goals, assists, other stats', '/images/boardLogos/fantasysoccer.png');
+insert into Boards values(2, 'Netflix', 'Netflix movies watched', '/images/boardLogos/netflix.png');
+insert into Boards values(3, 'Github', 'Lines of code committed', '/images/boardLogos/github.png');
 
 
 create table BoardAccountLink(
@@ -53,6 +53,9 @@ insert into BoardAccountLink values(1, 3);
 
 insert into BoardAccountLink values(2, 1);
 insert into BoardAccountLink values(2, 2);
+insert into BoardAccountLink values(2, 3);
+
+
 insert into BoardAccountLink values(3, 1);
 insert into BoardAccountLink values(3, 2);
 
@@ -89,11 +92,15 @@ insert into Scores values(1, 3, 3, 2, 'Assists', '2017-09-21');
 insert into Scores values(2, 1, 1, 30, 'Movies Watched', '2017-08-31' );
 insert into Scores values(2, 2, 1, 40, 'Movies Watched', '2017-10-26');
 insert into Scores values(2, 3, 1, 20, 'Movies Watched', '2017-09-21');
+
 /* Add tv shows watched */
 insert into Scores values(2, 1, 2, 12, 'TV Shows Watched', '2017-08-31' );
 insert into Scores values(2, 2, 2, 6, 'TV Shows Watched', '2017-09-20');
 insert into Scores values(2, 3, 2, 15, 'TV Shows Watched', '2017-09-21');
 insert into Scores values(2, 4, 2, 40, 'TV Shows Watched', '2017-09-21');
+
+/*Github: Add followers */
+insert into Scores values(3, 1, 1, 0, 'Followers', '2017-08-31' );
 
 
 
@@ -153,49 +160,6 @@ select *
 from Accounts A, Scores S
 where S.scoreID = 1
 and A.userID = S.userID;
-
-/*
-For authors who published science fiction but not non-fiction, list how many 
-books each author published with each publishing company.
-Write the relational algebra
-Write the SQL code for the above, but sorted by publisher and then by author 
-names
-
-select WB.name, SF.publisherName, count(ISBN) as NumberPublished
-from WrittenBy WB, NFBook NF, SFBook SF
-Where WB.ISBN  = NF.ISBN
-and WB.ISBN = SF.ISBN
-
-
-/*
-Report the names of unique publishers who published books that are priced between 
-$50 and $75 but not $50 or $75, 
-Write the relational algebra
-Write the SQL code, but sorted by publisher name
-
-select Distinct P.name
-from SFBook SF, NFBook NF, Publisher P
-where SF.price > 50
-and SF.price < 75
-and NF.price > 50
-and NF.price < 75
-and P.name = SF.publisherName
-and P.name = NF.publisherName
-
-/*
-Report the warehouse code and phone number for warehouses that stock more
- than 500 copies of any book by the author ‘Isaac Asimov’.
-Write the relational algebra
-Write the SQL code
-
-select W.code, W.phone
-from Warehouse W, Stocks S, WrittenBy WB
-where WB.name = 'Isaac Asimov'
-and S.numberOfBooks > 500
-and WB.ISBN = S.ISBN
-and S.WH_code = W.code
-*/
-
 
 
 

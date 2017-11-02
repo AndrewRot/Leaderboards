@@ -9,13 +9,18 @@ npm install body-parser
 npm install mongodb
 npm install express
 npm install monk
-npm install react-axios  //http requests might not use
-npm install --save react-http-request
-npm install react-xhr
 npm install url
 npm install --save async //have multiple queries - wait on result of each other - mongo async helper
 npm install --save asyncawait
 npm install mysql
+npm install github //not this
+npm install github-api //not this
+npm install octonode //Using this
+npm i node-fetch
+
+use these to do user icons:
+//https://css-tricks.com/image-upload-manipulation-react/
+https://stackoverflow.com/questions/15772394/how-to-upload-display-and-save-images-using-node-js-and-express
 
 
 //Check out express-sessions for user authenitcation

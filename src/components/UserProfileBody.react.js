@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 import $ from 'jquery';
 //import {Grid, Row, Col, Thumbnail, Button, Carousel, Media} from 'react-bootstrap';
-import './UserProfileBody.css';
+import styles from './UserProfileBody.css';
 
 
 

@@ -1,58 +1,25 @@
 // server/app.js
 const express = require('express');
 var router = express.Router();
-var http = require('http');         // protocol 
+var http = require('https');         // protocol
 var url = require('url')
 const morgan = require('morgan');
 const path = require('path');
 const app = express();
 var qs = require('querystring');
-var tools = require("./sqlHelpers.js");
+var database = require("./DatabaseUtility.js");
+
+var APIRouter = require("./APIRouter.js");
+//var async = require('async');
 
 
-//const mongoHelpers = require('./mongoHelpers');
-var async = require('async');
-
-
-// **** CODE FOR SETTING UP MONGO ***********************
-//var favicon = require('serve-favicon');
-//var logger = require('morgan');
+// *************************************************************
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 // New Code
-var mongodb = require('mongodb');
-var url = 'mongodb://localhost:27017/accounts';
-var monk = require('monk');
 var qs = require('querystring');
-
-
-//******* MY SQL ************************************************
-var mysql = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'password',
-  database : 'leaderboards'
- });
-
-connection.connect(function(err){
- if(!err) {
-     console.log("Database is connected ... \n\n");  
- } else {
-     console.log("Error connecting database ... \n\n");  
- }
- });
-
-//WORKING!
-/*connection.query('SELECT * FROM accounts', function (err, rows, fields) {
-  if (err) throw err
-
-  console.log('The solution is: ', rows[0])
-})
-*/
-
-//***************
+let connection;
 
 
 // Setup logger
@@ -60,21 +27,24 @@ app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:htt
 
 // Serve static assets
 app.use(express.static(path.resolve(__dirname, '..', 'build')));
-
-
-
-// **** CODE FOR SETTING UP MONGO ***********************
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
 
 
 
+//Middleware function before every server call. Every time a page is loaded - perform these tasks
+// 1.) connect to the database
+// Concern - when is a good time to kill the connection? (they can perform multple queries from one page) conncetion.end()
+app.all('*', (req, res, next) => {
+    connection = database.connectToDatabase();
+    next();
+});
 
 
 /* Handle post requests from the client */
 app.post('/signup',(req,res) =>{
   //grab the elements sent from the user
-  let userid= 4; //We are going to have to eventually make this unique and globally incremental, but 5 is fine for now
+  let userid = 4; //We are going to have to eventually make this unique and globally incremental, but 5 is fine for now
   var first=req.body.first;
   var last=req.body.last;
   var username=req.body.username;
@@ -88,8 +58,7 @@ app.post('/signup',(req,res) =>{
 
   //Converting to mySQL
   //Create Query string to pass
-  //insert into Accounts values(1, 'Andrew', 'Rottier', 'acrottier', 'andrewrottier95@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123');
-  // will want to convert this into a method somehow
+  //let connection = database.connectToDatabase();
   var query = "insert into Accounts values(" +userid+",'"+first+"','"+last+"','"+username+"','"+email+"','"+password+"','"+city+"','"+state+"','"+country+"','"+token+"');";
   console.log("QUERY:" +query);
   connection.query(query, function (err, rows, fields) {
@@ -148,27 +117,6 @@ app.get('/login',(req,res) =>{
   })
 });
 
-//Verify that a facebook token is valid
-app.get('/verify',(req,res) =>{
-  console.log("URL: "+ req.url );
-  //parse our url to get the fields we want
-  //Starting URL: /verify?token=123siodfn9u23nr1&userid=12345321
-  var uri = req.url.replace("/verify?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
-  var uri = uri.replace(/token=/i, ''); //strip out the email and password name fields
-  var uri = uri.replace(/userid=/i, ''); //strip out the email and password name fields
-  //gablergab&dude%40wpi.edu
-  var uri = uri.split('&'); //now we have an array of the email and password
-  //Desired, variables holding individual strings
-  var token=uri[0]; //this is the access token
-  var userid=uri[1];
-
-  console.log("Access Token = "+token+", userID = "+userid);
-  
-  //How do we know what to store, who to store it with?
-
-  res.end("Verified end");
-});
-
 
 
 //fetchboards from the database for the browse page
@@ -199,8 +147,6 @@ app.get('/getmyboardinfo',(req,res) =>{
     res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
   })
 });
-
-
 
 
 app.get('/getBoardStats',(req,res) =>{
@@ -277,8 +223,6 @@ app.get('/leaderboard',(req,res) =>{
       timeQuery = " and S.time >  DATE_SUB(CURDATE(), INTERVAL 4 WEEK) ";
       break;
   }
-
-
   //console.log("boardID: "+boardID+ " scoreID: "+scoreID+ " statType: "+statType+" statTime: "+statTime+" statLocation: "+statLocation+" userID: "+userID + " city: "+city+" state: "+state+" country: "+country);
 
   //This is going to have to be updated to use more filters, probably a few consecutive queries or lots of joins
@@ -298,16 +242,48 @@ app.get('/leaderboard',(req,res) =>{
     //console.log('Leaderboard data fetched: ', JSON.stringify(rows));
     res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
   })
-
 });
 
+
+
+//Connect to the respective board's API, pass along the boardID, login credentials, and database connection
+app.get('/connectto/*',(req,res) =>{
+    console.log("API URL: "+ req.url );
+    //parse our url to get the fields we want
+    //Starting URL: /connectto/3?username=andrewrot&password=1one124
+    var uri = req.url.replace("/connectto/", ''); //strip out the path  
+    var uri = uri.replace(/userID=/i, ''); //strip out the email and password name fields
+    var uri = uri.replace(/email=/i, ''); //strip out the email and password name fields
+    var uri = uri.replace(/password=/i, ''); //strip out the email and password name fields
+
+    var uriSplit = uri.split('?');//break into [#, username=XXX&password=XXX]
+    var boardID = uriSplit[0]; //first element is the boardID
+
+    var uri = uriSplit[1].split('&'); //now we have an array of the email and password
+    //Desired, variables holding individual strings
+    var userID=uri[0];
+    var email=uri[1].replace(/%40/i, '@'); //conver this back to @ from %40
+    var password=uri[2];
+
+    console.log("boardID = "+boardID+ "userID = "+userID+ ", email = "+email+", password = ***");
+    
+    //Attempt to login to the application. If successful, return the data in object form* OLD
+    //Connect to API, then send data to database directly. Pass the connection as well
+    let APIData = APIRouter.connectToAPI(boardID, email, password); 
+    console.log("Collected Data: "+APIData);
+
+    //Insert the returned data to it's repective database
+    database.insertData(boardID, userID, APIData, connection);
+
+    //Return a successful connection;
+    res.status(200).send('Good');
+
+  });
 
 
 
 
 //*******************************************************
-
-
 // Always return the main index.html, so react-router render the route in the client
 app.get('*', (req, res) => {
   //console.log("req.path: "+ req.path +   " ... req.url: "+ req);

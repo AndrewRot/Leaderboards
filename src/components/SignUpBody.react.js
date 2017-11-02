@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import './SignUpBody.css';
 import { Button, ButtonToolbar, MenuItem, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-import FacebookButton from './FacebookButton.react';
+import FacebookButton from './FacebookButton.react'; 
+import UploadImage from './UploadImage.react.js';
 
 
 import $ from 'jquery';
-
-
-//import {Grid, Row, Col, Thumbnail, Button, Carousel, Media} from 'react-bootstrap';
-
-
 
 
 function UserGreeting(props) {
@@ -135,7 +131,6 @@ class SignUpBody extends Component {
     
     const isLoggedIn = this.state.isLoggedIn;
 
-
     //poplate the 50 states array for menu rop down
     let stateList = new Array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
     let countryList = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas"
@@ -197,6 +192,8 @@ class SignUpBody extends Component {
             <FormControl value={this.state.password} onChange={this.handleChange} name="password" type="password" />
           </FormGroup>
 
+          
+
           <hr />
           <h2> Location </h2>
 
@@ -234,7 +231,9 @@ class SignUpBody extends Component {
             </FormControl>
           </FormGroup>
 
+          
 
+          <hr />
 
           <Button block bsSize="large" disabled={!this.validateForm()} type="submit" >
             Sign Up!
@@ -259,6 +258,11 @@ export default SignUpBody;
 
 
 /*
+
+<UploadImage /> -change this to //https://css-tricks.com/image-upload-manipulation-react/
+
+
+
         <div class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="true" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email" data-onlogin="checkLoginState();"></div>
 
 
