@@ -44,19 +44,6 @@ npm run build
 node server
 
 
-# Mongo Requirements
-You must have mongoDB on your computer. 
-Make sure you are able to run commands like mongo and mongodb. Check to see if your .bashrc or .bash_profile has the following path defined:
-
-export PATH="$PATH:/usr/local/mongodb/bin"
-
-Make sure that mongod is directed to the data directory in our project folder. User the command:
-
-mongod --dbpath /PATH/TO/DIRECTORY/Leaders/leaders/data
-
-You must have this server open in order for the application to interact with mongo and our database
-You can then spawn a mongo terminal using the mongo command.
-
 
 
 Check out Nodemon later for restarting server when new content is posted...
