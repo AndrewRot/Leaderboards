@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import {Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Table, Panel} from 'react-bootstrap';
 import $ from 'jquery';
+//import Utils from './Utilities' //not working
+//import Utils from './/utils/Utilities' - ideally something like this is better - but struggling
+
 
 
 function BoardRow(props) {
@@ -27,7 +30,6 @@ class LeaderboardBody extends Component {
     this.state = { 
       title: 'Default',
       company: '', //this is the name of the collection we want to query
-      //companyID: 0, //company identifier --not using anymroe
 
       //statType: 0, //used to hold the scoreID of the statType drop down not using anymore?
       statTime: 'All Time',
@@ -70,7 +72,6 @@ class LeaderboardBody extends Component {
   //if the screen has been updated, check to update the board stats
   fetchBoardStats() {
     let boardID = this.state.boardID;
-    //console.log("boardID post: "+boardID);
 
     //if it is the boardID that changed, we need to get this board's stats
     $.get("http://localhost:9000/getBoardStats",{boardID: boardID}, (data, status) => {
@@ -94,29 +95,24 @@ class LeaderboardBody extends Component {
     const city = getCookie('city');
     const state = getCookie('state');
     const country = getCookie('country');
-
     //console.log("boardID: "+boardID+ " scoreID: "+scoreID+ " statType: "+statType+" statTime: "+statTime+" statLocation: "+statLocation+" userID: "+userID + " city: "+city+" state: "+state+" country: "+country);
 
     $.get("http://localhost:9000/leaderboard",{boardID: boardID, scoreID: scoreID, statTime: statTime, statLocation: statLocation, userID: userID, city: city, state: state, country: country}, (data, status) => {
-          //now assign this to the proper variables in react component
           //console.log("Response from server was ["+status+"] and the data:  " + data);
           
-          //convert response to js object
-          const convertedData = JSON.parse(data);
+          const convertedData = JSON.parse(data); //convert response to js object
        
           //populate our rows array with the returned data array
           this.setState({rows: convertedData})
     });
-    //refresh the page maybe to load the new query info?
-
-    //update the sorted state type, this cahnges our tables after the query is done
-    //this.setState({sortedStatType: stat});
+    
     event.preventDefault();
   }
 
   //Load up the user's boards at the beginning
   componentWillMount() {
-    const userid = getCookie("userid");
+    const userid = getCookie("userID"); //convert to using token
+    console.log("userID: "+userid)
 
     $.get("http://localhost:9000/getmyboardinfo",{userid: userid}, (data, status) => {
           //now assign this to the proper variables in react component
@@ -262,12 +258,52 @@ class LeaderboardBody extends Component {
 
 
 
+function getCookie(cname) {
+  //console.log("Looking in cookie for: "+cname);
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+          var str = c.substring(name.length, c.length);
+          //console.log("found it: "+str);
+            return str;
+        }
+    }
+    //console.log("Did not find it");
+    return "";
+}
 
 export default LeaderboardBody;
 
 
+//Might just have to move this outside of this component, stand alone function?
+//This wont last for long, eventually do an indidvidal modular function. This is too custom for this stage of the app. Or make it so we pass it an array/dictionary to update the cookie fields
+//write to the actual cookie
+/*function updateCookie(convertedData){
+    var d = new Date();
+    d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = "userID=" + convertedData.userID;
+    document.cookie = "firstname=" + convertedData.firstName;
+    document.cookie = "lastname=" + convertedData.lastName;
+    document.cookie = "username=" + convertedData.username;
+    document.cookie = "email=" + convertedData.email ;
+    document.cookie = "city=" + convertedData.city ;
+    document.cookie = "state=" + convertedData.state ;
+    document.cookie = "country=" + convertedData.country ;
+    //document.cookie = "password=" + convertedData.password ;
+    document.cookie = "loggedin=true";
+    document.cookie = expires;
+    document.cookie = "path=/";
+}*/
 
 
+/*
 function getCookie(cname) {
   //console.log("Looking in cookie for: "+cname);
     var name = cname + "=";
@@ -288,7 +324,7 @@ function getCookie(cname) {
     return "";
 }
 
-/*
+
 
 <option value="score">Score</option>
                 <option value="goals">Goals</option>

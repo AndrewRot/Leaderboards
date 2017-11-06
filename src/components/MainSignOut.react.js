@@ -11,7 +11,7 @@ class MainSignOut extends Component {
     
     //fields - try and load them from the cookie
     this.state = {
-      isLoggedIn: (getCookie("loggedin") == "true") ? true:false, //load this from cookie - this is a string when returned! - convert it to bool value
+      isLoggedIn: (getCookie("loggedin") === "true") ? true:false, //load this from cookie - this is a string when returned! - convert it to bool value
       username: getCookie("username"),
       email: getCookie("email"),
       password: getCookie("password"),
@@ -63,10 +63,10 @@ export function getCookie(cname) {
     var ca = decodedCookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }

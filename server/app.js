@@ -125,7 +125,7 @@ app.get('/fetchboards',(req,res) =>{
   console.log("QUERY:" +query);
   connection.query(query, function (err, rows, fields) {
     if (err) throw err
-    console.log('Fetched boards: ', JSON.stringify(rows));
+    //console.log('Fetched boards: ', JSON.stringify(rows));
     res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
   })
 });
@@ -143,7 +143,7 @@ app.get('/getmyboardinfo',(req,res) =>{
   console.log("QUERY:" +query);
   connection.query(query, function (err, rows, fields) {
     if (err) throw err
-    console.log('Fetched boards: ', JSON.stringify(rows));
+    //console.log('Fetched boards: ', JSON.stringify(rows));
     res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
   })
 });
@@ -158,13 +158,13 @@ app.get('/getBoardStats',(req,res) =>{
 
   //Desired, variables holding individual strings
   var boardID=uri;
-  console.log("boardID = "+boardID);
+  //console.log("boardID = "+boardID);
 
   var query = "Select * from Scores S where S.boardID = "+boardID + " GROUP BY S.scoreID";
   console.log("QUERY:" +query);
   connection.query(query, function (err, rows, fields) {
     if (err) throw err
-    console.log('Fetched board statTypes: ', JSON.stringify(rows));
+    //console.log('Fetched board statTypes: ', JSON.stringify(rows));
     res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
   })
 });
@@ -269,15 +269,19 @@ app.get('/connectto/*',(req,res) =>{
     
     //Attempt to login to the application. If successful, return the data in object form* OLD
     //Connect to API, then send data to database directly. Pass the connection as well
-    let APIData = APIRouter.connectToAPI(boardID, email, password); 
-    console.log("Collected Data: "+APIData);
-
-    //Insert the returned data to it's repective database
-    database.insertData(boardID, userID, APIData, connection);
+    var p1 = APIRouter.connectToAPI(boardID, email, password);
+    p1.then(function(APIData) {
+      console.log("--------------: "+ APIData);
+      database.insertData(boardID, userID, APIData, connection);
+      //send back data
+      //res.end("end");
+    }, function(reason) {
+      console.log("fail: "+reason); // Error!
+    });
+ 
 
     //Return a successful connection;
     res.status(200).send('Good');
-
   });
 
 
@@ -287,7 +291,6 @@ app.get('/connectto/*',(req,res) =>{
 // Always return the main index.html, so react-router render the route in the client
 app.get('*', (req, res) => {
   //console.log("req.path: "+ req.path +   " ... req.url: "+ req);
-
 
    	//This handles every page request. Directs the user to index.html, everything is rendered from there
   	res.sendFile(path.resolve(__dirname, '..', 'build', 'index.html'));

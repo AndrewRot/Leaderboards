@@ -26,20 +26,20 @@ module.exports = {
 		return connection;
     },
 
-    insertData: function(boardID, userID, convertedData, connection) {
+    insertData: function(boardID, userID, APIData, connection) {
     	console.log("insertData");
     	switch(boardID) {
 	        case "1": //Fantasy Sports
-	          SQL.updateFantasyData(boardID, userID, convertedData, connection); 
+	          SQL.updateFantasyData(boardID, userID, APIData, connection); 
 	          break;
 	        case "2": //Netflix
-	          SQL.updateNetflixData(boardID, userID, convertedData, connection); 
+	          SQL.updateNetflixData(boardID, userID, APIData, connection); 
 	          break;
 	        case "3": //github
-	          SQL.updateGithubData(boardID, userID, convertedData, connection); 
+	          SQL.updateGithubData(boardID, userID, APIData, connection); 
 	          break;
 	      }    
-        //return a*b
+       
     }
 
     //write one for creating a query string

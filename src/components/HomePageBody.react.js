@@ -21,8 +21,6 @@ function Square(props) {
 class HomePageBody extends Component {
 
 
-
-
   //After we pull company profiles form the database, pass in the information to each square as a prop
   renderSquare(i) {
      return <Square value={i} />;

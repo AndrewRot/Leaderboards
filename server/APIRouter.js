@@ -12,10 +12,10 @@ module.exports = {
 
       switch(boardID) {
         case "1": //Fantasy Sports
-          return API.connectToFantasy(boardID, email, password);//add parameters for username/password
+           return API.connectToFantasy(boardID, email, password);//add parameters for username/password
           break;
         case "2": //Netflix
-          return API.connectToNetflix(boardID, email, password);//add parameters for username/password
+          callback(API.connectToNetflix(boardID, email, password));//add parameters for username/password
           break;
         case "3": //github
           return API.connectToGitHub(boardID, email, password); 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './SignUpBody.css';
-import { Button, ButtonToolbar, MenuItem, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-import FacebookButton from './FacebookButton.react'; 
-import UploadImage from './UploadImage.react.js';
+import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+//import FacebookButton from './FacebookButton.react'; 
+//import UploadImage from './UploadImage.react.js'; ** Or we will pull this image from Facebook after we set up authentication
 
 
 import $ from 'jquery';
@@ -132,7 +132,7 @@ class SignUpBody extends Component {
     const isLoggedIn = this.state.isLoggedIn;
 
     //poplate the 50 states array for menu rop down
-    let stateList = new Array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
+    let stateList = ["AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY"];
     let countryList = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas"
     ,"Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands"
     ,"Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica"

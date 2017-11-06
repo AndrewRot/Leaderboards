@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap-theme.css';
 // components takes precedence over default styles.
 import './index.css';
 
-
 //import App from './App';
 import Routes from './routes';
 

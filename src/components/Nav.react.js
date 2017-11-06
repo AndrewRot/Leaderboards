@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import FacebookProvider, { Login } from 'react-facebook';
-//import FacebookLogin from 'react-facebook-login';
+//import FacebookProvider, { Login } from 'react-facebook';
 
-//import logo from './logo.svg';
+import {Navbar, Nav, NavDropdown,MenuItem, FormGroup, FormControl, Button } from 'react-bootstrap';
 
 
 //import *  as ReactBootstrap from 'react-bootstrap';
-let Navbar = require("react-bootstrap/lib/Navbar");
+/*let Navbar = require("react-bootstrap/lib/Navbar");
 let NavItem = require("react-bootstrap/lib/NavItem");
 let Nav = require ("react-bootstrap/lib/Nav");
 let NavDropdown = require("react-bootstrap/lib/NavDropdown");
 let MenuItem = require("react-bootstrap/lib/MenuItem");
 let FormGroup = require("react-bootstrap/lib/FormGroup");
 let FormControl = require("react-bootstrap/lib/FormControl");
-let Button = require("react-bootstrap/lib/Button");
+let Button = require("react-bootstrap/lib/Button");*/
 
  //<fb:login-button scope="public_profile,email,user_about_me,user_location" onlogin="checkLoginState();"> Login
         //</fb:login-button>
@@ -57,7 +56,7 @@ class Navigationmenu extends Component {
 
   render() {
 
-    let isLoggedIn = (getCookie("loggedin") == "true") ? true:false;
+    let isLoggedIn = (getCookie("loggedin") === "true") ? true:false;
     console.log("isLoggedIn: "+ isLoggedIn);
     let NAVPORTAL = null;
 
@@ -129,10 +128,10 @@ function getCookie(cname) {
     var ca = decodedCookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
           var str = c.substring(name.length, c.length);
           //console.log("found it: "+str);
             return str;

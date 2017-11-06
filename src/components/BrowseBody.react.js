@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Grid, Row, Col,Image, Thumbnail, Button,FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import {Grid, Col, Thumbnail, Button,FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import $ from 'jquery';
 import './BrowseBody.css';
 import Modal from 'react-modal';
@@ -230,10 +230,10 @@ function getCookie(cname) {
     var ca = decodedCookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
           var str = c.substring(name.length, c.length);
           //console.log("found it: "+str);
             return str;

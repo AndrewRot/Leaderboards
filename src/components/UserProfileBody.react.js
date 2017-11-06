@@ -1,52 +1,11 @@
+//*** PLEASE NOTE - this page isnt built with react-bootstrap - the rest of website is, we should probably convert it over. This is a place holder 
+
 import React, { Component } from 'react';
-//import Request from 'react-http-request';
-
 import $ from 'jquery';
+//import Utils from './Utilities'
 //import {Grid, Row, Col, Thumbnail, Button, Carousel, Media} from 'react-bootstrap';
-import styles from './UserProfileBody.css';
+//import styles from './UserProfileBody.css';
 
-
-
-//Might just have to move this outside of this component, stand alone function?
-//maybe change to "updateCookie(convertedData) => {"
-export function updateCookie(convertedData){
-    //write to the actual cookie
-    var d = new Date();
-    d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = "userID=" + convertedData.userID;
-    document.cookie = "firstname=" + convertedData.firstName;
-    document.cookie = "lastname=" + convertedData.lastName;
-    document.cookie = "username=" + convertedData.username;
-    document.cookie = "email=" + convertedData.email ;
-    document.cookie = "city=" + convertedData.city ;
-    document.cookie = "state=" + convertedData.state ;
-    document.cookie = "country=" + convertedData.country ;
-    //document.cookie = "password=" + convertedData.password ;
-    document.cookie = "loggedin=true";
-    document.cookie = expires;
-    document.cookie = "path=/";
-  }
-
-function getCookie(cname) {
-  //console.log("Looking in cookie for: "+cname);
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          var str = c.substring(name.length, c.length);
-          //console.log("found it: "+str);
-            return str;
-        }
-    }
-    //console.log("Did not find it");
-    return "";
-}
 
 //This file is just using the regular bootstrap css file. Not fancy pants react-bootstraps here
 class UserProfileBody extends Component {
@@ -75,7 +34,9 @@ class UserProfileBody extends Component {
   }
 
  
-  //Handle what happens when a user tries to log in
+  //Probably want to fetch this user's board info here - too much info to keep in a cookie
+  //-Create a token and assign it to a user - have them send that token as identification,
+  //-if it matches the token in the database for that user, then authenticate them.
   /*componentWillMount() {
     const email = getCookie("email");
     const password = getCookie("password");
@@ -171,5 +132,69 @@ class UserProfileBody extends Component {
     }
 }
 
+
+function getCookie(cname) {
+  //console.log("Looking in cookie for: "+cname);
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+          var str = c.substring(name.length, c.length);
+          //console.log("found it: "+str);
+            return str;
+        }
+    }
+    //console.log("Did not find it");
+    return "";
+}
+
 export default UserProfileBody;
+
+
+
+//Might just have to move this outside of this component, stand alone function?
+//maybe change to "updateCookie(convertedData) => {"
+/*export function updateCookie(convertedData){
+    //write to the actual cookie
+    var d = new Date();
+    d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = "userID=" + convertedData.userID;
+    document.cookie = "firstname=" + convertedData.firstName;
+    document.cookie = "lastname=" + convertedData.lastName;
+    document.cookie = "username=" + convertedData.username;
+    document.cookie = "email=" + convertedData.email ;
+    document.cookie = "city=" + convertedData.city ;
+    document.cookie = "state=" + convertedData.state ;
+    document.cookie = "country=" + convertedData.country ;
+    //document.cookie = "password=" + convertedData.password ;
+    document.cookie = "loggedin=true";
+    document.cookie = expires;
+    document.cookie = "path=/";
+  }
+
+function getCookie(cname) {
+  //console.log("Looking in cookie for: "+cname);
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+          var str = c.substring(name.length, c.length);
+          //console.log("found it: "+str);
+            return str;
+        }
+    }
+    //console.log("Did not find it");
+    return "";
+}*/
 
