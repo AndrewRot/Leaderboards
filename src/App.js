@@ -4,8 +4,8 @@
 
 
 import React, { Component } from 'react';
-//import logo from './logo.svg';
-import './App.css';
+//import logo from './logo.svg'
+import './css/App.css';
 import HomePageBody from './components/HomePageBody.react.js';
 import Navigationmenu from './components/Nav.react.js';
 
