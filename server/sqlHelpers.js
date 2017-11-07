@@ -53,6 +53,21 @@ module.exports = {
 
     },
 
+    getNextUserID: function(connection){
+        return new Promise(function(success, fail) {
+            var query = "SELECT COUNT(*) as count FROM Accounts;";
+            connection.query(query, function (err, rows, fields) {
+                if (err) {
+                    throw err
+                    fail();
+                }
+                var newID = parseInt(rows[0].count)+1;
+                console.log('New userID: ', newID);
+                success(newID);
+            })
+        })
+     }
+
 
     //write one for creating a query string
 };
