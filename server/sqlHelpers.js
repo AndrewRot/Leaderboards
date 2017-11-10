@@ -1,5 +1,6 @@
 //This file contains specific queries/insertions into our database
 var database = require("./DatabaseUtility.js");
+var utils = require("./Utilities.js");
 
 
 module.exports = {
@@ -66,7 +67,39 @@ module.exports = {
                 success(newID);
             })
         })
-     }
+     },
+
+     login: function(connection, email, password){
+        return new Promise(function(success, fail) {
+            var query = "Select * from Accounts where email = '"+ email + "' and password = '"+password+"'";
+            connection.query(query, function (err, rows, fields) {
+                if (err) {
+                    throw err
+                    fail();
+                }
+                //now generate token and assign it in the database
+                var token= utils.generateToken();
+                var query = " UPDATE Accounts SET token = '"+ token + "' WHERE email = '"+ email + "' and password = '"+password+"'";
+                connection.query(query, function (err, rows, fields) {
+                    if (err) {
+                        throw err
+                        fail();
+                    }
+                    //Now requery for the user to get his information + token
+                    var query = "Select * from Accounts where email = '"+ email + "' and password = '"+password+"'";
+                    connection.query(query, function (err, rows, fields) {
+                        if (err) {
+                            throw err
+                            fail();
+                        }
+                        console.log('Logged in with assigned token: ', rows);
+                        success(rows); //return the logged in user's info!
+                    })
+                })
+            })
+        })
+     },
+
 
 
     //write one for creating a query string

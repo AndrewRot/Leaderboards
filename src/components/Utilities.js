@@ -43,6 +43,8 @@ getCookie: function(convertedData) {
     document.cookie = "city=" + convertedData.city ;
     document.cookie = "state=" + convertedData.state ;
     document.cookie = "country=" + convertedData.country ;
+    document.cookie = "token=" + convertedData.token ;
+
     //document.cookie = "password=" + convertedData.password ;
     document.cookie = "loggedin=true";
     document.cookie = expires;

@@ -55,16 +55,22 @@ class BrowseBody extends Component {
      return <Square value={i} />;
   }
 
+  openCustomModal(boardID, event){
+    const userID = getCookie("userID"); //*** DANGER **** This is a vulnerability - a user that changes his cookie can update someone else's scores!
+    const url = "http://localhost:9000/connectto/"+boardID;
+    $.get(url,{userID: userID}, function(data){
+        alert("New HTML modal has been returned");
+        //used the new content - set our model to this content 
+    });
+  }
+
   
-  openModal(boardID, boardName, boardImageURL,  event) {
+  openModal(boardID, boardName, boardImageURL, event) {
     this.setState({modalIsOpen: true});
     console.log("Model is open: "+this.state.modalIsOpen);
-
     console.log("BoardID: "+boardID);
     console.log("BoardName: "+boardName);
     console.log("boardImageURL: "+boardImageURL);
-
-
 
     //Update our state variables, so we can populate the model with company specific information
     this.setState({boardID: boardID});
@@ -102,11 +108,14 @@ class BrowseBody extends Component {
   handleSubmit(event) {
 
     //call the method to call the api 
+    //*** NEXT SWITCH THIS TO TOKEN BEFORE MOVING ON - AND FIX ABOVE
     const userID = getCookie("userID"); //*** DANGER **** This is a vulnerability - a user that changes his cookie can update someone else's scores!
     const email = this.state.email;
     const password = this.state.password;
     const boardID = this.state.boardID;
     const url = "http://localhost:9000/connectto/"+boardID;
+
+
 
     $.get(url,{userID: userID, email: email, password: password}, function(data){
         alert("Logging into "+email+"'s account on Github");
@@ -114,8 +123,6 @@ class BrowseBody extends Component {
         //update the content of the modal "successfully signed into xxx"
         //"would you like to view your ranking?"
     });
-
-
 
 
     /* THEN post the updates to the database **** need to add authentication token for respective websites
@@ -200,8 +207,20 @@ class BrowseBody extends Component {
             let boardID = board.boardID;
             let boardName = board.name;
             let boardImageURL = board.imgURL;
-            //create a variable set to a function - this allows use to pass multiple vars to the method
-            let boundClick = this.openModal.bind(this, boardID, boardName, boardImageURL); 
+            let requiresSeperateAuthModal = board.requiresSeperateAuthModal;
+            let boundClick;
+
+            //Determine what modal to open, our own or the given one from the given website.
+            if(requiresSeperateAuthModal === 'N'){
+              //create a variable set to a function - this allows use to pass multiple vars to the method
+              boundClick = this.openModal.bind(this, boardID, boardName, boardImageURL); 
+            } else {
+              //send connection request to the specificed API that requires we use their login modal
+              boundClick = this.openCustomModal.bind(this, boardID);
+            }
+
+            
+
             return (
               <Col xs={6} md={4}>
                 <Thumbnail src={board.imgURL} alt="242x200" >
