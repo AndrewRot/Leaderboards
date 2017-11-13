@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-import './UserProfileBody.css';
+import '../user-profile/css/UserProfileBody.css';
 import Cookies from 'universal-cookie';
-
 
 
 //This file is just using the regular bootstrap css file. Not fancy pants react-bootstraps here

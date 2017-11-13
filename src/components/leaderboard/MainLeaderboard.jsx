@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-//import logo from './logo.svg';
-//import './App.css';
-//import { Button } from 'react-bootstrap';
-import LeaderboardBody from './LeaderboardBody.react.js';
-import Navigationmenu from './Nav.react.js';
+
+import LeaderboardBody from './LeaderboardBody';
+import Navigationmenu from '../Nav';
 
 
 //Incorperate different things to make these pages more complex

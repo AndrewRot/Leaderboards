@@ -1,23 +1,25 @@
 import React, { Component } from 'react';
-import SignUpBody from './SignUpBody.react.js';
-import Navigationmenu from './Nav.react.js';
+import BrowseBody from './BrowseBody';
+import Navigationmenu from '../Nav';
 
 
 //Incorperate different things to make these pages more complex
-class MainSignUp extends Component {
+class MainBrowse extends Component {
   render() {
     return (
        <div className="App">
         <Navigationmenu />
+        <h1> Browse </h1>
         
-        <SignUpBody />
+        <BrowseBody />
       </div>
 
     );
   }
 }
 
-export default MainSignUp;
+export default MainBrowse;
+
 
 
 
