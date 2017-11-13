@@ -47,4 +47,17 @@ node server
 
 
 Check out Nodemon later for restarting server when new content is posted...
-https://zellwk.com/blog/crud-express-mongodb/
+
+
+
+
+Run mysql
+
+mysql.server start
+sudo mysql -p 
+ Treehouse!1
+
+
+
+
+

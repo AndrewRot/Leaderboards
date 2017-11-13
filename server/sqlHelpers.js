@@ -54,6 +54,11 @@ module.exports = {
 
     },
 
+    /** getNextUserID
+     * finds the next available userID by query the database. Returns a promise containing the next ID
+     * @param {Connection} connection: the connection to the database 
+     * @return {Promise(integer)} next available ID for a new user
+     */
     getNextUserID: function(connection){
         return new Promise(function(success, fail) {
             var query = "SELECT COUNT(*) as count FROM Accounts;";
@@ -69,6 +74,13 @@ module.exports = {
         })
      },
 
+     /** login
+     * Attempts to log a user in. If successful, assigns the user a new Token, updates it in the database, then we requery to get the full set of data to return to the client
+     * @param {Connection} connection: the connection to the database 
+     * @param {Email} the email of the user
+     * @param {Password} the password of the user
+     * @return {Promise (JSON)} the logged in user's information in JSON format
+     */
      login: function(connection, email, password){
         return new Promise(function(success, fail) {
             var query = "Select * from Accounts where email = '"+ email + "' and password = '"+password+"'";
@@ -102,5 +114,4 @@ module.exports = {
 
 
 
-    //write one for creating a query string
 };

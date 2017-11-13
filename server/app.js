@@ -42,11 +42,7 @@ app.all('*', (req, res, next) => {
     connection = database.connectToDatabase();
     next();
 });
-//myfitnesspal 
-//cross fit
-//orange fitness
-//golfshot
-//next thursday
+
 
 /* Handle signing up from the client */
 //MAKE SURE COOKIE is holding the token!!
@@ -116,28 +112,14 @@ app.get('/login',(req,res) =>{
   var password=uri[1];
   console.log("email = "+email+", password = "+password);
 
-  //Get the next available userID ***********************************
   //attempt to login, if success, then assign new token
   var p1 = SQL.login(connection, email, password);
-  p1.then(function(data) { // User succesfully logged in! - Give them a new token
+  p1.then(function(data) { // User succesfully logged in! 
     //console.log('User Info: ', JSON.stringify(data));
     res.status(200).end(JSON.stringify(data)); 
   }, function(reason) {
     console.log("Failed to login: "+reason); // Error!
   });
-  //*******************************************************
-
-  //generate a token for the user here since they are loggin in again
-
-  /*
-  var query = "Select * from Accounts where email = '"+ email + "' and password = '"+password+"'";
-  console.log("QUERY:" +query);
-  connection.query(query, function (err, rows, fields) {
-    if (err) throw err
-
-    console.log('User Info: ', JSON.stringify(rows));
-    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
-  })*/
 });
 
 
@@ -183,8 +165,8 @@ app.get('/getBoardStats',(req,res) =>{
   var boardID=uri;
   //console.log("boardID = "+boardID);
 
-  var query = "Select * from Scores S where S.boardID = "+boardID + " GROUP BY S.scoreID";
-  console.log("QUERY:" +query);
+  var query = "Select DISTINCT scoreName from Scores S where S.boardID = "+boardID + "  ";
+  console.log("QUERY: " +query);
   connection.query(query, function (err, rows, fields) {
     if (err) throw err
     //console.log('Fetched board statTypes: ', JSON.stringify(rows));
@@ -271,61 +253,74 @@ app.get('/leaderboard',(req,res) =>{
 
 //Connect to the respective board's API, pass along the boardID, login credentials, and database connection
 app.get('/connectto/*',(req,res) =>{
-    console.log("API URL: "+ req.url );
-    //parse our url to get the fields we want
-    //Starting URL: /connectto/3?username=andrewrot&password=1one124
-    var uri = req.url.replace("/connectto/", ''); //strip out the path  
-    var uri = uri.replace(/userID=/i, ''); //strip out the email and password name fields
-    var uri = uri.replace(/email=/i, ''); //strip out the email and password name fields
-    var uri = uri.replace(/password=/i, ''); //strip out the email and password name fields
+  console.log("API URL: "+ req.url );
+  //parse our url to get the fields we want
+  //Starting URL: /connectto/3?username=andrewrot&password=1one124
+  var uri = req.url.replace("/connectto/", ''); //strip out the path  
+  var uri = uri.replace(/userID=/i, ''); //strip out the email and password name fields
+  var uri = uri.replace(/email=/i, ''); //strip out the email and password name fields
+  var uri = uri.replace(/password=/i, ''); //strip out the email and password name fields
 
-    var uriSplit = uri.split('?');//break into [#, username=XXX&password=XXX]
-    var boardID = uriSplit[0]; //first element is the boardID
+  var uriSplit = uri.split('?');//break into [#, username=XXX&password=XXX]
+  var boardID = uriSplit[0]; //first element is the boardID
 
-    var uri = uriSplit[1].split('&'); //now we have an array of the email and password
-    //Desired, variables holding individual strings
-    var userID=uri[0];
-    var email=uri[1].replace(/%40/i, '@'); //conver this back to @ from %40
-    var password=uri[2];
+  var uri = uriSplit[1].split('&'); //now we have an array of the email and password
+  //Desired, variables holding individual strings
+  var userID=uri[0];
+  var email=uri[1].replace(/%40/i, '@'); //conver this back to @ from %40
+  var password=uri[2];
 
-    console.log("boardID = "+boardID+ "userID = "+userID+ ", email = "+email+", password = ***");
-    
-    //Attempt to login to the application. If successful, return the data in object form* OLD
-    //Connect to API, then send data to database directly. Pass the connection as well
-    var p1 = APIRouter.connectToAPI(boardID, email, password);
-    p1.then(function(APIData) {
-      console.log("--------------: "+ APIData);
-      database.insertData(boardID, userID, APIData, connection);
-      //send back data
-      //res.end("end");
-    }, function(reason) {
-      console.log("fail: "+reason); // Error!
-    });
- 
-
-    //Return a successful connection;
-    res.status(200).send('Good');
+  console.log("boardID = "+boardID+ " userID = "+userID+ ", email = "+email+", password = ***");
+  
+  //Attempt to login to the application. If successful, return the data in object form* OLD
+  //Connect to API, then send data to database directly. Pass the connection as well
+  var p1 = APIRouter.connectToAPI(boardID, email, password);
+  p1.then(function(APIData) {
+    console.log("--------------: "+ APIData);
+    database.insertData(boardID, userID, APIData, connection);
+    //send back data
+    //res.end("end");
+  }, function(reason) {
+    console.log("fail: "+reason); // Error!
   });
 
-//redirect page
-app.get('/browse',(req,res) =>{
-   var query = "Select * from Boards limit 9";
-  console.log("QUERY:" +query);
-  connection.query(query, function (err, rows, fields) {
-    if (err) throw err
-    //console.log('Fetched boards: ', JSON.stringify(rows));
-    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
-  })
+
+  //Return a successful connection;
+  res.status(200).send('Good');
 });
+
+//Connect to an API that has their own custom login
+app.get('/ConnectToCustomAPI/*',(req,res) =>{
+  console.log("API URL: "+ req.url );
+  //parse our url to get the fields we want
+  //Starting URL: /connectto/3?
+  var uri = req.url.replace("/ConnectToCustomAPI/", ''); //strip out the path  
+  var boardID = uri[0]; //first element is the boardID
+  console.log("boardID = "+boardID);
+  
+  //Attempt to login to the application. If successful, return the data in object form* OLD
+  //Connect to API, then send data to database directly. Pass the connection as well
+  var p1 = APIRouter.connectToAPI(boardID, '', ''); //email and password blank
+  p1.then(function(APIData) {
+    console.log("--------------: "+ APIData); //This should be html login page
+    res.status(200).end(APIData);
+  }, function(reason) {
+    console.log("fail: "+reason); // Error!
+  });
+
+  //Return a successful connection;
+  //res.status(200).send('Good');
+});
+//^This will have to have another handler that receives the data returned by an authentic response form insta or whatever 3rd party app
+
 
 
 //*******************************************************
 // Always return the main index.html, so react-router render the route in the client
 app.get('*', (req, res) => {
   //console.log("req.path: "+ req.path +   " ... req.url: "+ req);
-
-   	//This handles every page request. Directs the user to index.html, everything is rendered from there
-  	res.sendFile(path.resolve(__dirname, '..', 'build', 'index.html'));
+ 	//This handles every page request. Directs the user to index.html, everything is rendered from there
+	res.sendFile(path.resolve(__dirname, '..', 'build', 'index.html'));
 });
 
 module.exports = app;

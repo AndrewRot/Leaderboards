@@ -11,7 +11,7 @@ module.exports = {
     	var connection = mysql.createConnection({
 		  	host     : 'localhost',
 			user     : 'root',
-			password : 'password',
+			password : 'Treehouse!1', //Load this from a config file or something
 			database : 'leaderboards'
 		 });
 
@@ -37,6 +37,9 @@ module.exports = {
 	          break;
 	        case "3": //github
 	          SQL.updateGithubData(boardID, userID, APIData, connection); 
+	          break;
+	        case "4": //Instagram
+	          //SQL.updateGithubData(boardID, userID, APIData, connection); 
 	          break;
 	      }    
        

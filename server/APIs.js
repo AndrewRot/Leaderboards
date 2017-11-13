@@ -1,5 +1,8 @@
 var http = require('https'); // protocol
 var database = require("./DatabaseUtility.js");
+const util = require('util');
+var ig = require('instagram-node').instagram();
+var api = require('instagram-node').instagram();
 
 
 
@@ -68,65 +71,6 @@ module.exports = {
 	    	req.end();
     	});
 
-    	//setTimeout(function(){
-	      //console.log("Timeout: "+JSON.stringify(APIData))
-	      //database.insertData(boardID, userID, APIData, connection);
-	    //}, 2000);
-
-    	/*
-    	console.log("Github");
-    	console.log('Email: ' + email  +', Pass: ***'  );
-
-	    var req = http.request(options, function (res) {
-	        var chunks = []; //collect returning stream of data into this buffer
-
-	        res.on("data", function (chunk) {
-	          	chunks.push(chunk); 
-	        });
-
-	        res.on("end", function () {
-		        var body = Buffer.concat(chunks); //recombine the stream of data
-		        //console.log(body.toString());
-
-		        //Convert data to an object
-		        convertedData = JSON.parse(body);
-				//console.log('Parsed to json', convertedData);
-				console.log('Followers: ', convertedData.followers);
-				console.log('Following: ', convertedData.following);
-
-				//return convertedData; 
-	        	///callback(convertedData);
-	        });
-
-	        req.on('error', function (e) {
-		        console.log('problem with request: ' + e.message);
-		    });
-	    });
-
-	    req.end();
-	}
-
-
-
-	return convertedData;
-	    */
-	    /*return postCodeCheck(function (data) {
-	    	//console.log("GOT DATA: "+pCLatLng.toString())
-	    	//console.log("GOT DATA: "+JSON.stringify(pCLatLng))
-		    return data;
-		});*/
-		//console.log(x);
-		//return x;
-
-		
-	    //wait until we finish calculating
-	    
-	    //return convertedData;
-
-	      //req.end(convertedData);
-	      
-	      //console.log('Basic ' + new Buffer('andrewrottier95@gmail.com' + ':' + '').toString('base64') );
-
     },
 
     //https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=code
@@ -135,33 +79,66 @@ module.exports = {
     connectToInstagram: function(boardID, email, password) {
 
     	return new Promise(function(success, fail) {
+
+			 /* Another attempt at IG
+			http.get('https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=token&scope=public_content', (resp) => {
+			  let data = '';
+
+			  // A chunk of data has been recieved.
+			  resp.on('data', (chunk) => {
+			    data += chunk;
+				console.log("E");
+			  });
+
+			  // The whole response has been received. Print out the result.
+			  resp.on('end', () => {
+				console.log(resp);
+			    console.log(JSON.parse(data).explanation);
+				success(data);
+			  });
+
+			}).on("error", (err) => {
+			  console.log("Error: " + err.message);
+			});
+			 */
+    		
 			var options = {
-			  "method": "GET",
+			  "method": "POST",
 			  "hostname": "api.instagram.com",
 			  "port": null,
 			  "path": "/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2FBrowse&response_type=code",
 			  "headers": {
 			    "cache-control": "no-cache",
-			    "postman-token": "4d877522-9180-05c7-7e69-08378447c3e7"
+    			"postman-token": "cd2fc154-c2a9-6b9e-51f8-08e3660be929"
 			  }
 			};
 
 			var req = http.request(options, function (res) {
+
 			  var chunks = [];
 
 			  res.on("data", function (chunk) {
 			    chunks.push(chunk);
+			    console.log("X");
 			  });
 
 			  res.on("end", function () {
 			    var body = Buffer.concat(chunks);
-			    console.log(body.toString());
-			    convertedData = JSON.parse(body);
-			    success(convertedData);
+			    //console.log("RES*************: "+JSON.stringify(res, null, 4));
+			    //console.log(util.inspect(res, {showHidden: false, depth: null}))
+			    console.log("Instagram login: "+body);
+
+			    console.log("Instagram login: "+body.toString());
+			    //var convertedData = JSON.parse(body);
+			    success(body);
 			  });
 			});
 
 			req.end();
+			
+			   
+
+			
 		})
     }
 

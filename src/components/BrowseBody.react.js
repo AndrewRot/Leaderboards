@@ -56,10 +56,14 @@ class BrowseBody extends Component {
   }
 
   openCustomModal(boardID, event){
+    console.log("Custom API for board: "+boardID);
     const userID = getCookie("userID"); //*** DANGER **** This is a vulnerability - a user that changes his cookie can update someone else's scores!
-    const url = "http://localhost:9000/connectto/"+boardID;
-    $.get(url,{userID: userID}, function(data){
-        alert("New HTML modal has been returned");
+
+    //const boardID = this.state.boardID;
+    const url = "http://localhost:9000/ConnectToCustomAPI/"+boardID;
+
+    $.get(url,{}, function(data){
+        alert("New HTML modal has been returned: "+data);
         //used the new content - set our model to this content 
     });
   }
@@ -90,12 +94,12 @@ class BrowseBody extends Component {
     console.log("Fetching boards...");
      $.get("http://localhost:9000/fetchboards",{}, (data, status) => {
           //data returned is an array named list - contains boards form the DB
-          console.log("Response from server was ["+status+"] and the data:  " + data);
+          //console.log("Response from server was ["+status+"] and the data:  " + data);
           
           //Returned DATA: [{"boardID":1,"name":"Fantasy Soccer","description":"Fantasy soccer, goals, assists, other stats","imgURL":"/images/fantasysoccer.png"},{"boardID":2,"name":"Netflix","description":"Netflix movies watched","imgURL":"/images/netflix.png"}]
           //convert response to js object
           const convertedData = JSON.parse(data);
-          console.log("Boards converted: "+ convertedData);
+          //console.log("Boards converted: "+ convertedData);
 
           //Updating component state values
           this.setState({boards: convertedData});
