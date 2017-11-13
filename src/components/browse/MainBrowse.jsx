@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import BrowseBody from './BrowseBody.react.js';
-import Navigationmenu from './Nav.react.js';
+import BrowseBody from './BrowseBody';
+import Navigationmenu from '../Nav';
 
 
 //Incorperate different things to make these pages more complex

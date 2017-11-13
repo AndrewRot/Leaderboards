@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import SignUpBody from './SignUpBody.react.js';
-import Navigationmenu from './Nav.react.js';
+import SignUpBody from './SignUpBody';
+import Navigationmenu from '../Nav';
 
 
 //Incorperate different things to make these pages more complex

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Col, Thumbnail, Button, Carousel, Media} from 'react-bootstrap';
-import mainpic from './leadertemp.png';
-import './HomePageBody.css';
+import mainpic from '../images/leadertemp.png';
+import './css/HomePageBody.css';
 
 function Square(props) {
   return (
