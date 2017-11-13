@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-export default class FacebookButton extends React.Component {
+export default class FacebookButton extends React {
    constructor(props) {
       super(props);
 
