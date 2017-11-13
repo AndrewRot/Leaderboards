@@ -20,6 +20,9 @@ module.exports = {
         case "3": //github
           return API.connectToGitHub(boardID, email, password); 
           break;
+        case "3": //github
+          return API.connectToInstagram(boardID, email, password); 
+          break;
       }    
 
     },

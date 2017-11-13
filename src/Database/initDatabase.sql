@@ -32,11 +32,14 @@ create table Boards(
 	name varchar(30),
 	description varchar(100),
 	imgURL varchar(50),
+	requiresSeperateAuthModal varchar(1) NOT NULL CHECK (requiresSeperateAuthModal IN ('N', 'Y')),
 	PRIMARY KEY (boardID)
 );
-insert into Boards values(1, 'Fantasy Soccer', 'Fantasy soccer, goals, assists, other stats', '/images/boardLogos/fantasysoccer.png');
-insert into Boards values(2, 'Netflix', 'Netflix movies watched', '/images/boardLogos/netflix.png');
-insert into Boards values(3, 'Github', 'Lines of code committed', '/images/boardLogos/github.png');
+insert into Boards values(1, 'Fantasy Soccer', 'Fantasy soccer, goals, assists, other stats', '/images/boardLogos/fantasysoccer.png', 'N');
+insert into Boards values(2, 'Netflix', 'Netflix movies watched', '/images/boardLogos/netflix.png', 'N');
+insert into Boards values(3, 'Github', 'Lines of code committed', '/images/boardLogos/github.png', 'N');
+insert into Boards values(4, 'Instagram', 'Social media stats', '/images/boardLogos/instagram.png', 'Y');
+
 
 
 create table BoardAccountLink(

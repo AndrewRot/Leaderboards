@@ -1,16 +1,19 @@
 // server/app.js
 const express = require('express');
 var router = express.Router();
-var http = require('https');         // protocol
+var http = require('https');  // protocol
 var url = require('url')
 const morgan = require('morgan');
 const path = require('path');
 const app = express();
 var qs = require('querystring');
-var database = require("./DatabaseUtility.js");
 
+var database = require("./DatabaseUtility.js");
 var APIRouter = require("./APIRouter.js");
-//var async = require('async');
+var utils = require("./Utilities.js");
+var SQL = require("./sqlHelpers.js");
+
+
 
 
 // *************************************************************
@@ -39,12 +42,15 @@ app.all('*', (req, res, next) => {
     connection = database.connectToDatabase();
     next();
 });
+//myfitnesspal 
+//cross fit
+//orange fitness
+//golfshot
+//next thursday
 
-
-/* Handle post requests from the client */
+/* Handle signing up from the client */
+//MAKE SURE COOKIE is holding the token!!
 app.post('/signup',(req,res) =>{
-  //grab the elements sent from the user
-  let userid = 4; //We are going to have to eventually make this unique and globally incremental, but 5 is fine for now
   var first=req.body.first;
   var last=req.body.last;
   var username=req.body.username;
@@ -54,18 +60,21 @@ app.post('/signup',(req,res) =>{
   var zip=req.body.zip;
   var state=req.body.state;
   var country=req.body.country;
-  var token= '123';
+  var token= utils.generateToken();
 
-  //Converting to mySQL
-  //Create Query string to pass
-  //let connection = database.connectToDatabase();
-  var query = "insert into Accounts values(" +userid+",'"+first+"','"+last+"','"+username+"','"+email+"','"+password+"','"+city+"','"+state+"','"+country+"','"+token+"');";
-  console.log("QUERY:" +query);
-  connection.query(query, function (err, rows, fields) {
-    if (err) throw err
+  //Get the next available userID
+  var p1 = SQL.getNextUserID(connection);
+  p1.then(function(newID) { // Found the next available ID!
+    var query = "insert into Accounts values(" +newID+",'"+first+"','"+last+"','"+username+"','"+email+"','"+password+"','"+city+"','"+state+"','"+country+"','"+token+"');";
+    console.log("QUERY:" +query);
+    connection.query(query, function (err, rows, fields) {
+      if (err) throw err
+      console.log('Created Account: ', rows)
+    })
+  }, function(reason) {
+    console.log("Failed to create account: "+reason); // Error!
+  });
 
-    console.log('Inserted: ', rows)
-  })
   res.status(200).send('Good');
 });
 
@@ -91,6 +100,7 @@ app.post('/followboard',(req,res) =>{
 
 
 /* Handle get login requests from the client */
+//***TO DO - generate new token and assign here as well - return it to user and update his local cookie
 app.get('/login',(req,res) =>{
   console.log("URL: "+ req.url );
 
@@ -104,9 +114,22 @@ app.get('/login',(req,res) =>{
   //Desired, variables holding individual strings
   var email=uri[0].replace(/%40/i, '@'); //conver this back to %40
   var password=uri[1];
-
   console.log("email = "+email+", password = "+password);
-  
+
+  //Get the next available userID ***********************************
+  //attempt to login, if success, then assign new token
+  var p1 = SQL.login(connection, email, password);
+  p1.then(function(data) { // User succesfully logged in! - Give them a new token
+    //console.log('User Info: ', JSON.stringify(data));
+    res.status(200).end(JSON.stringify(data)); 
+  }, function(reason) {
+    console.log("Failed to login: "+reason); // Error!
+  });
+  //*******************************************************
+
+  //generate a token for the user here since they are loggin in again
+
+  /*
   var query = "Select * from Accounts where email = '"+ email + "' and password = '"+password+"'";
   console.log("QUERY:" +query);
   connection.query(query, function (err, rows, fields) {
@@ -114,7 +137,7 @@ app.get('/login',(req,res) =>{
 
     console.log('User Info: ', JSON.stringify(rows));
     res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
-  })
+  })*/
 });
 
 
@@ -284,7 +307,16 @@ app.get('/connectto/*',(req,res) =>{
     res.status(200).send('Good');
   });
 
-
+//redirect page
+app.get('/browse',(req,res) =>{
+   var query = "Select * from Boards limit 9";
+  console.log("QUERY:" +query);
+  connection.query(query, function (err, rows, fields) {
+    if (err) throw err
+    //console.log('Fetched boards: ', JSON.stringify(rows));
+    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
+  })
+});
 
 
 //*******************************************************

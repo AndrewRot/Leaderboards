@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import '../user-profile/css/UserProfileBody.css';
+import Cookies from 'universal-cookie';
 
 
 //This file is just using the regular bootstrap css file. Not fancy pants react-bootstraps here
@@ -38,27 +39,21 @@ class SignInPage extends Component {
 
     //will have to update this URL later (or just /login ?)
     $.get("http://localhost:9000/login",{email: email, password: password}, (data, status) => {
-          //alert("Response from server was ["+status+"] and the data:  " + data);
+          alert("Response from server was ["+status+"] and the data:  " + data);
           //now assign this to the proper variables in react component
           console.log("Response from server was ["+status+"] and the data:  " + data);
           
-          //comes back in form of array of objects. so we need to reference the first index
-
           //convert response to js object
           const convertedData = JSON.parse(data);
-          console.log("Name: "+convertedData[0].firstName); 
-          console.log("Last: "+convertedData[0].lastName); 
-          console.log("Username: "+convertedData[0].username); 
+          console.log("Token: "+convertedData[0].token); 
 
           //write to our cookie!
           updateCookie(convertedData[0]); //not working properly
-          console.log(document.cookie);
-
-
-          
+          window.location="/User/"//+convertedData[0].username; **** At some point, we want everyone to have their own user page. 
+          ///On server, make a route for /accounts/username and make a server function for it to return the account's information - similar to login but with limited data
     });
     //refresh the page, it will now load out user profile
-    //window.location="/User";
+    
     event.preventDefault();
 
   }
@@ -106,22 +101,26 @@ class SignInPage extends Component {
 }
 
 //write to the actual cookie
-export function updateCookie(convertedData){
-    var d = new Date();
-    d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = "userID=" + convertedData.userID;
-    document.cookie = "firstname=" + convertedData.firstName;
-    document.cookie = "lastname=" + convertedData.lastName;
-    document.cookie = "username=" + convertedData.username;
-    document.cookie = "email=" + convertedData.email ;
-    document.cookie = "city=" + convertedData.city ;
-    document.cookie = "state=" + convertedData.state ;
-    document.cookie = "country=" + convertedData.country ;
-    //document.cookie = "password=" + convertedData.password ;
-    document.cookie = "loggedin=true";
-    document.cookie = expires;
-    document.cookie = "path=/";
+//updateCookie = (convertedData) => {
+function updateCookie(convertedData) {
+  const cookies = new Cookies();
+  cookies.set('userID', convertedData.userID, { path: '/' });
+  cookies.set('firstname', convertedData.firstname, { path: '/' });
+  cookies.set('lastname', convertedData.lastname, { path: '/' });
+  cookies.set('username', convertedData.username, { path: '/' });
+  cookies.set('email', convertedData.email.replace(/%40/i, '@'), { path: '/' });
+  cookies.set('city', convertedData.city.replace(/%20/i, '@'), { path: '/' });
+  cookies.set('state', convertedData.state.replace(/%20/i, '@'), { path: '/' });
+  cookies.set('country', convertedData.country.replace(/%20/i, '@'), { path: '/' });
+  cookies.set('token', convertedData.token, { path: '/' });
+  cookies.set('loggedin', true, { path: '/' });
+
+  var d = new Date();
+  d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
+  var expires = d.toUTCString();
+  cookies.set('expires', expires, { path: '/' });
+
+  console.log(document.cookie);
 }
 
 

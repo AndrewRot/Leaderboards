@@ -129,6 +129,41 @@ module.exports = {
 
     },
 
+    //https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=code
+    //register board for instagram now
+    //dont need these parameters.... probably
+    connectToInstagram: function(boardID, email, password) {
+
+    	return new Promise(function(success, fail) {
+			var options = {
+			  "method": "GET",
+			  "hostname": "api.instagram.com",
+			  "port": null,
+			  "path": "/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2FBrowse&response_type=code",
+			  "headers": {
+			    "cache-control": "no-cache",
+			    "postman-token": "4d877522-9180-05c7-7e69-08378447c3e7"
+			  }
+			};
+
+			var req = http.request(options, function (res) {
+			  var chunks = [];
+
+			  res.on("data", function (chunk) {
+			    chunks.push(chunk);
+			  });
+
+			  res.on("end", function () {
+			    var body = Buffer.concat(chunks);
+			    console.log(body.toString());
+			    convertedData = JSON.parse(body);
+			    success(convertedData);
+			  });
+			});
+
+			req.end();
+		})
+    }
 
     
 };
