@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './SignUpBody.css';
+import './css/SignUpBody.css';
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 //import FacebookButton from './FacebookButton.react'; 
 //import UploadImage from './UploadImage.react.js'; ** Or we will pull this image from Facebook after we set up authentication

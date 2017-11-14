@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import UserProfileBody from './UserProfileBody.react.js';
-import SignInPage from './SignInPage.react.js';
-import Navigationmenu from './Nav.react.js';
-import Utils from './Utilities'
+import UserProfileBody from './UserProfileBody';
+import SignInPage from '../login/SignInPage';
+import Navigationmenu from '../Nav';
+import Utils from '../../utils/Utilities';
 //import * as cookieHandler from "./cookieHandler.js"; //if this doesnt work but in sub directory here
 
 

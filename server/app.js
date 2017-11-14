@@ -193,7 +193,7 @@ app.get('/leaderboard',(req,res) =>{
 
   //Desired, variables holding individual strings
   var boardID=uri[0];
-  var scoreID=uri[1];
+  var scoreID=uri[1].replace(/%20/i, ' ');
   var statTime=uri[2];
   var statLocation=uri[3];
   var userID=uri[4];
@@ -234,7 +234,7 @@ app.get('/leaderboard',(req,res) =>{
   //Select all the scores from the given board's selected statType/scoreID. 
   var query = "Select firstName, lastName, username, score, city, state, country, time  "+
                "from Scores S, Accounts A "+
-               " where S.scoreID = "+scoreID+
+               " where S.scoreName = '"+scoreID+ "'"+
                 locationalQuery + //select the type of locational based info
                 timeQuery + //select the type of time based info
                " and S.boardID = "+ boardID+ 

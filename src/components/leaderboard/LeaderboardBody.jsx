@@ -31,9 +31,10 @@ class LeaderboardBody extends Component {
       title: 'Default',
       company: '', //this is the name of the collection we want to query
 
+      //statType: 0, //used to hold the scoreID of the statType drop down not using anymore?
       statTime: 'All Time',
       statLocation: 'Global',
-      scoreID: 'Games Played', //hardcoded starter - and is actually scoreName - scoreID stopped working.. not sure why
+      scoreID: 1,
 
       sortedStatType: 'score', //update this value after the search returns,
 
@@ -79,7 +80,7 @@ class LeaderboardBody extends Component {
           const convertedData = JSON.parse(data);     //convert response to js object
           //populate our statTypes array with the returned data array
           this.setState({statTypes: convertedData}) //boardID, scoreID, scoreName
-          this.setState({scoreID: convertedData[0].scoreName}) //update the scoreID
+          //this.setState({scoreID: convertedData[0].scoreID}) //update the scoreID
     });
   }
 
@@ -98,11 +99,13 @@ class LeaderboardBody extends Component {
 
     $.get("http://localhost:9000/leaderboard",{boardID: boardID, scoreID: scoreID, statTime: statTime, statLocation: statLocation, userID: userID, city: city, state: state, country: country}, (data, status) => {
           //console.log("Response from server was ["+status+"] and the data:  " + data);
+          
           const convertedData = JSON.parse(data); //convert response to js object
        
           //populate our rows array with the returned data array
           this.setState({rows: convertedData})
     });
+    
     event.preventDefault();
   }
 
@@ -124,7 +127,7 @@ class LeaderboardBody extends Component {
 
           //update the current company/board with the first from the list
           this.setState({company: convertedData[0].name}) //make this change when drop down changes
-          this.setState({scoreID: convertedData[0].scoreName})
+          //this.setState({scoreID: convertedData[0].scoreID})
           this.setState({boardID: convertedData[0].boardID}, this.fetchBoardStats) //use fetchBoardStats as a callback when boardID loads.
     });
 
@@ -168,9 +171,9 @@ class LeaderboardBody extends Component {
 
             <FormGroup controlId="formControlsSelect">
               <ControlLabel>Stat</ControlLabel>
-              <FormControl componentClass="select" placeholder="Score" name="scoreName" value={this.state.scoreID} onChange={this.handleChange}>
+              <FormControl componentClass="select" placeholder="Score" name="scoreID" value={this.state.scoreID} onChange={this.handleChange}>
                  {statTypes.map(function(stat, i){
-                  return (<option value={this.stat.scoreName}>{this.stat.scoreName}</option>)
+                  return (<option value={stat.scoreID}>{stat.scoreName}</option>)
                   })}
 
               

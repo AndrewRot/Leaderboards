@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './UploadImage.css';
 
 
-class UploadImage extends React.Component {
+class UploadImage extends React {
   constructor(props) {
     super(props);
     this.state = {file: '',imagePreviewUrl: ''};
@@ -56,7 +56,5 @@ class UploadImage extends React.Component {
     )
   }
 }
-  
-
 
 export default UploadImage;

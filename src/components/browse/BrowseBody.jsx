@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Grid, Col, Thumbnail, Button,FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import $ from 'jquery';
-import './BrowseBody.css';
+import './css/BrowseBody.css';
 import Modal from 'react-modal';
 
 
