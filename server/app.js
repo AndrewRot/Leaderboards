@@ -14,7 +14,17 @@ var utils = require("./Utilities.js");
 var SQL = require("./sqlHelpers.js");
 
 
-
+var firebase = require("firebase");
+var config = {
+    apiKey: "AIzaSyBEYP9K3REt_QlQu3p3YFYCSd2aXgbet70",
+    authDomain: "tutorial-5768c.firebaseapp.com",
+    databaseURL: "https://tutorial-5768c.firebaseio.com",
+    projectId: "tutorial-5768c",
+    storageBucket: "tutorial-5768c.appspot.com",
+    messagingSenderId: "720582588702"
+};
+firebase.initializeApp(config);
+console.log("new script");
 
 // *************************************************************
 //var cookieParser = require('cookie-parser');

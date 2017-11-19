@@ -7,6 +7,7 @@
     "asyncawait": "^1.0.6",
     "bootstrap": "^3.3.7",
     "express": "^4.16.2",
+    "firebase": "^4.6.2",
     "jquery": "^3.2.1",
     "mongodb": "^2.2.25",
     "morgan": "^1.9.0",
@@ -22,7 +23,7 @@
     "react-router": "^3.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
-    "universal-cookie": "^2.1.0", 
+    "universal-cookie": "^2.1.0",
     "xmlhttprequest": "^1.8.0 "
   },
   "scripts": {
