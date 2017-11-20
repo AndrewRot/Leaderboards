@@ -14,17 +14,6 @@ var utils = require("./Utilities.js");
 var SQL = require("./sqlHelpers.js");
 
 
-var firebase = require("firebase");
-var config = {
-    apiKey: "AIzaSyBEYP9K3REt_QlQu3p3YFYCSd2aXgbet70",
-    authDomain: "tutorial-5768c.firebaseapp.com",
-    databaseURL: "https://tutorial-5768c.firebaseio.com",
-    projectId: "tutorial-5768c",
-    storageBucket: "tutorial-5768c.appspot.com",
-    messagingSenderId: "720582588702"
-};
-firebase.initializeApp(config);
-console.log("new script");
 
 // *************************************************************
 //var cookieParser = require('cookie-parser');
@@ -158,7 +147,7 @@ app.get('/getmyboardinfo',(req,res) =>{
   console.log("QUERY:" +query);
   connection.query(query, function (err, rows, fields) {
     if (err) throw err
-    //console.log('Fetched boards: ', JSON.stringify(rows));
+    console.log('Fetched boards: ', JSON.stringify(rows));
     res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
   })
 });
@@ -175,11 +164,11 @@ app.get('/getBoardStats',(req,res) =>{
   var boardID=uri;
   //console.log("boardID = "+boardID);
 
-  var query = "Select DISTINCT scoreName from Scores S where S.boardID = "+boardID + "  ";
+  var query = "Select DISTINCT scoreID, scoreName from Scores S where S.boardID = "+boardID + "  ";
   console.log("QUERY: " +query);
   connection.query(query, function (err, rows, fields) {
     if (err) throw err
-    //console.log('Fetched board statTypes: ', JSON.stringify(rows));
+    console.log('Fetched board statTypes: ', JSON.stringify(rows));
     res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
   })
 });
@@ -244,7 +233,7 @@ app.get('/leaderboard',(req,res) =>{
   //Select all the scores from the given board's selected statType/scoreID. 
   var query = "Select firstName, lastName, username, score, city, state, country, time  "+
                "from Scores S, Accounts A "+
-               " where S.scoreName = '"+scoreID+ "'"+
+               " where S.scoreID = "+scoreID+ ""+
                 locationalQuery + //select the type of locational based info
                 timeQuery + //select the type of time based info
                " and S.boardID = "+ boardID+ 

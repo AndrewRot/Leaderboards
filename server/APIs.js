@@ -1,7 +1,6 @@
 var http = require('https'); // protocol
 var database = require("./DatabaseUtility.js");
 const util = require('util');
-var ig = require('instagram-node').instagram();
 var api = require('instagram-node').instagram();
 
 

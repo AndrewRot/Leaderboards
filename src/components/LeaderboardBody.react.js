@@ -33,7 +33,7 @@ class LeaderboardBody extends Component {
 
       statTime: 'All Time',
       statLocation: 'Global',
-      scoreID: 'Games Played', //hardcoded starter - and is actually scoreName - scoreID stopped working.. not sure why
+      scoreID: 1, //hardcoded starter - and is actually scoreName - scoreID stopped working.. not sure why
 
       sortedStatType: 'score', //update this value after the search returns,
 
@@ -97,7 +97,7 @@ class LeaderboardBody extends Component {
     //console.log("boardID: "+boardID+ " scoreID: "+scoreID+ " statType: "+statType+" statTime: "+statTime+" statLocation: "+statLocation+" userID: "+userID + " city: "+city+" state: "+state+" country: "+country);
 
     $.get("http://localhost:9000/leaderboard",{boardID: boardID, scoreID: scoreID, statTime: statTime, statLocation: statLocation, userID: userID, city: city, state: state, country: country}, (data, status) => {
-          //console.log("Response from server was ["+status+"] and the data:  " + data);
+          console.log("Response from server was ["+status+"] and the data:  " + data);
           const convertedData = JSON.parse(data); //convert response to js object
        
           //populate our rows array with the returned data array
@@ -124,7 +124,7 @@ class LeaderboardBody extends Component {
 
           //update the current company/board with the first from the list
           this.setState({company: convertedData[0].name}) //make this change when drop down changes
-          this.setState({scoreID: convertedData[0].scoreName})
+          //this.setState({scoreID: convertedData[0].scoreID}) //This isnt set at all here
           this.setState({boardID: convertedData[0].boardID}, this.fetchBoardStats) //use fetchBoardStats as a callback when boardID loads.
     });
 
@@ -168,12 +168,13 @@ class LeaderboardBody extends Component {
 
             <FormGroup controlId="formControlsSelect">
               <ControlLabel>Stat</ControlLabel>
-              <FormControl componentClass="select" placeholder="Score" name="scoreName" value={this.state.scoreID} onChange={this.handleChange}>
-                 {statTypes.map(function(stat, i){
-                  return (<option value={this.stat.scoreName}>{this.stat.scoreName}</option>)
+              <FormControl componentClass="select" placeholder="Score" name="scoreID" value={state.scoreID} onChange={this.handleChange}>
+
+                  {statTypes.map(function(stat, i){
+                      console.log("scoreID: "+stat.scoreID);
+                  return (<option value={stat.scoreID}>{stat.scoreName}</option>)
                   })}
 
-              
               </FormControl>
             </FormGroup>
 
