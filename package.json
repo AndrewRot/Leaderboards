@@ -24,7 +24,10 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
     "universal-cookie": "^2.1.0",
-    "xmlhttprequest": "^1.8.0 "
+    "xmlhttprequest": "^1.8.0 ",
+    "request": "^2.83.0",
+    "sntp": "^2.1.0"
+
   },
   "scripts": {
     "start": "react-scripts start",

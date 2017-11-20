@@ -2,6 +2,7 @@ var http = require('https'); // protocol
 var database = require("./DatabaseUtility.js");
 const util = require('util');
 var api = require('instagram-node').instagram();
+var querystring = require('querystring');
 
 
 
@@ -79,6 +80,38 @@ module.exports = {
 
     	return new Promise(function(success, fail) {
 
+
+    		//WORKS - sends the html
+            var request = require('request');
+            request('https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=code', function (error, response, body) {
+                console.log('error:', error); // Print the error if one occurred
+                console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                console.log('body:', body); // Print the HTML for the Google homepage.
+                success(body);
+            });
+
+
+            //https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=code
+            /*request.post(
+                { form: { client_id: '14054d3b12e14fdba3031ba55a5a5885',
+                    client_secret: '8f1113b89c434eacafd4b0f9d3c0a5d1',
+                    grant_type: 'authorization_code',
+                    redirect_uri: 'http://localhost:9000/Browse',
+                    code: code
+                },
+                    url: 'https://api.instagram.com/oauth/access_token'
+                },
+                function (err, response, body) {
+                    if (err) {
+                        console.log("error in Post", err)
+                    }else{
+                        console.log(JSON.parse(body))
+                    }
+                }
+            );*/
+
+
+
 			 /* Another attempt at IG
 			http.get('https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=token&scope=public_content', (resp) => {
 			  let data = '';
@@ -100,25 +133,29 @@ module.exports = {
 			  console.log("Error: " + err.message);
 			});
 			 */
-    		
-			var options = {
-			  "method": "POST",
-			  "hostname": "api.instagram.com",
-			  "port": null,
-			  "path": "/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2FBrowse&response_type=code",
-			  "headers": {
-			    "cache-control": "no-cache",
-    			"postman-token": "cd2fc154-c2a9-6b9e-51f8-08e3660be929"
-			  }
+
+/*
+			var options ={
+                method: "POST",
+                hostname: "api.instagram.com",
+                port: null,
+                path: "/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2FBrowse&response_type=token&scope=public_content",
+                headers: {
+                    'cache-control': "no-cache",
+                    'postman-token': "534bffc6-644a-f34d-6b61-9adebd290ac4"
+                }
 			};
 
 			var req = http.request(options, function (res) {
+                res.setEncoding('utf8');
+                console.log("statuscode: "+res.statusCode);
+                console.log(JSON.stringify(res.headers));
 
-			  var chunks = [];
+                var chunks = [];
 
 			  res.on("data", function (chunk) {
 			    chunks.push(chunk);
-			    console.log("X");
+			    console.log(chunk);
 			  });
 
 			  res.on("end", function () {
@@ -134,7 +171,7 @@ module.exports = {
 			});
 
 			req.end();
-			
+			*/
 			   
 
 			
