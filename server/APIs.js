@@ -3,7 +3,7 @@ var database = require("./DatabaseUtility.js");
 const util = require('util');
 var api = require('instagram-node').instagram();
 var querystring = require('querystring');
-
+var request = require('request');
 
 
 module.exports = {
@@ -81,16 +81,21 @@ module.exports = {
     	return new Promise(function(success, fail) {
 
 
-    		//WORKS - sends the html
-            var request = require('request');
-            request('https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=code', function (error, response, body) {
-                console.log('error:', error); // Print the error if one occurred
-                console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-                console.log('body:', body); // Print the HTML for the Google homepage.
-                success(body);
-            });
+    		//WORKS - Grabs the HTML of the new page... grab the href fromt he header and updated the user's window
+            request({followAllRedirects: true,
+				 url: 'https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/AuthInstagram&response_type=code'},
+				function (error, response, body) {
+                    //console.log('****************************** First response *************************');
+					console.log('error:', error); // Print the error if one occurred
+					console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                    console.log('href:', response.request.href); //Page we want our browser to load
+					console.log('body:', body); // Print the HTML for the Google homepage.
 
+                    var url = response.request.href;
+                    success(url);
+				});
 
+            ///USE THIS with the code returned in the URL
             //https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=code
             /*request.post(
                 { form: { client_id: '14054d3b12e14fdba3031ba55a5a5885',
@@ -103,37 +108,14 @@ module.exports = {
                 },
                 function (err, response, body) {
                     if (err) {
-                        console.log("error in Post", err)
+                        console.log("error in Post", err);
                     }else{
-                        console.log(JSON.parse(body))
+                        console.log(JSON.parse(body));
                     }
                 }
             );*/
 
-
-
-			 /* Another attempt at IG
-			http.get('https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=token&scope=public_content', (resp) => {
-			  let data = '';
-
-			  // A chunk of data has been recieved.
-			  resp.on('data', (chunk) => {
-			    data += chunk;
-				console.log("E");
-			  });
-
-			  // The whole response has been received. Print out the result.
-			  resp.on('end', () => {
-				console.log(resp);
-			    console.log(JSON.parse(data).explanation);
-				success(data);
-			  });
-
-			}).on("error", (err) => {
-			  console.log("Error: " + err.message);
-			});
-			 */
-
+//This gets a 302 direct message - however, not sure how to handle that reponse?
 /*
 			var options ={
                 method: "POST",
@@ -166,15 +148,15 @@ module.exports = {
 
 			    console.log("Instagram login: "+body.toString());
 			    //var convertedData = JSON.parse(body);
+
+
 			    success(body);
 			  });
 			});
 
 			req.end();
-			*/
-			   
+*/
 
-			
 		})
     }
 

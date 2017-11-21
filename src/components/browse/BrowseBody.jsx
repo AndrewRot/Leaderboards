@@ -67,9 +67,10 @@ class BrowseBody extends Component {
     const url = "http://localhost:9000/ConnectToCustomAPI/"+boardID;
 
     $.get(url,{}, function(data){
-        alert("New HTML modal has been returned: "+data);
+        window.location = data;
+        //alert("New HTML modal has been returned: "+data);
         //used the new content - set our model to this content
-        this.setState({modalBody: data});
+        //this.setState({modalBody: data});
     });
   }
 

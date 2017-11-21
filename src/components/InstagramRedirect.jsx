@@ -11,22 +11,34 @@ class InstagramRedirect extends Component {
 // we have recieved the user's access token, now lets use it to fetch some API database
 componentWillMount() {
 
-    console.log("Connecting with instagram");
+    console.log("Connecting with instagram, Attempt to fetch user token and data");
+    //http://localhost:9000/AuthInstagram?code=bddc1f12337146dab7fb0ebb7d214458
+    console.log("window.location.href: "+window.location.href); //extract the code from this and pass it as a paramenter
 
-    //this honestly might have to be a put. its fetch API data a.. maybe not - and then post to the datab
-     $.get("http://localhost:9000/fetchInstaData",{}, (data, status) => {
+    //uribuilding?
+    var parser = document.createElement('a');
+    parser.href = window.location.href;
+    let code = parser.code.replace("?code=", '');// "?code=1232eder234wref34"
+    console.log("Isolated code: "+code);
+
+    let url = "http://localhost:9000/fetchInstaData";
+
+    $.get(url ,{code: code}, (data, status) => {
           console.log("Response from server was ["+status+"] and the data:  " + data);
+          //Get the access token and user information here, store it in the database, update the cookie?
           
     });
-    window.location="/LeaderboardMain";
-  }
+    window.location="/LeaderboardMain"; //Add parameters to the route - this will set our initial statevalues/ determine what to query for data types/fields/score types of the select board
+    //something like /LeaderboardMain/boardName/scoreType
+    //Example:       /LeaderboardMain/Instagram/totalLikes
+}
 
   
 
   render() {
       return (
         <div>
-        suck it
+        <h1> Instagram Redirect Page </h1>
         </div>
     )
   }

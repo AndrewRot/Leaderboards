@@ -13,14 +13,20 @@ import MainSignUpContainer from './components/login/MainSignUpContainer';
 import MainSignOutContainer from './components/login/MainSignOutContainer';
 
 
+import AuthInstagram from './components/InstagramRedirect';
+
+
+
 const Routes = (props) => (
   <Router {...props}>
-    <Route path="/" component={App} />
-    <Route path="/LeaderboardMain" component={MainLeaderboard} />
-    <Route path="/Browse" component={MainBrowse} />
-    <Route path="/User" component={MainUserProfile} />
-    <Route path="/SignUp" component={MainSignUpContainer} />
-    <Route path="/SignOut" component={MainSignOutContainer} />
+      <Route path="/" component={App} />
+      <Route path="/LeaderboardMain" component={MainLeaderboard} />
+      <Route path="/Browse" component={MainBrowse} />
+      <Route path="/User" component={MainUserProfile} />
+      <Route path="/SignUp" component={MainSignUpContainer} />
+      <Route path="/SignOut" component={MainSignOutContainer} />
+      <Route path="/AuthInstagram" component={AuthInstagram} />
+
   </Router>
 );
 
