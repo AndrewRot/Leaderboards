@@ -41,8 +41,8 @@ componentWillMount() {
     // Get saved data from sessionStorage
     var userID = sessionStorage.getItem('userID');
     var boardID = sessionStorage.getItem('boardID');
-    console.log("userID: "+userID);
-    console.log("boardID: "+boardID);
+    //console.log("userID: "+userID);
+    //console.log("boardID: "+boardID);
 
 
     //use the code to get the access token, then some stats
@@ -52,6 +52,12 @@ componentWillMount() {
 
         // Remove all saved data from sessionStorage
         sessionStorage.clear();
+
+        //Fetch user stats
+        let url2 = "http://localhost:9000/fetchInstaUserData";
+        $.post(url2 ,{}, (data, status) => {
+
+        });
 
         //use retruned data to navigate to next page
     });
@@ -69,7 +75,7 @@ componentWillMount() {
           <Jumbotron>
               <h1>Signed in to Instagram</h1>
               <p>You have successfully logged in with Instagram, you will now be able to view your rankings.</p>
-              <p><Button bsStyle="primary">View leaderboard</Button></p>
+              <p><Button bsStyle="primary" block >View leaderboard</Button></p>
           </Jumbotron>
     )
   }

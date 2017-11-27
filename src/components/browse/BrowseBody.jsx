@@ -66,6 +66,18 @@ class BrowseBody extends Component {
     //const boardID = this.state.boardID;
     const url = "http://localhost:9000/ConnectToCustomAPI/"+boardID;
 
+      if (typeof(Storage) !== "undefined") {
+          // Code for localStorage/sessionStorage.
+          console.log("Code for localStorage/sessionStorage.");
+      } else {
+          // Sorry! No Web Storage support..
+          console.log(" Sorry! No Web Storage support..");
+      }
+
+      // Save data to sessionStorage - so we can load it in the redirect page to send scores to the database
+      sessionStorage.setItem('boardID', boardID.toString());
+      sessionStorage.setItem('userID', userID.toString()); //Replace later
+
     $.get(url,{}, function(data){
         window.location = data;
         //alert("New HTML modal has been returned: "+data);
@@ -127,10 +139,6 @@ class BrowseBody extends Component {
     const password = this.state.password;
     const boardID = this.state.boardID;
     const url = "http://localhost:9000/connectto/"+boardID;
-
-    // Save data to sessionStorage - so we can load it in the redirect page to send scores to the database
-      sessionStorage.setItem('boardID', boardID.toString());
-      sessionStorage.setItem('userID', userID.toString()); //Replace later
 
     $.get(url,{userID: userID, email: email, password: password}, function(data){
         alert("Logging into "+email+"'s account on Github");

@@ -89,7 +89,7 @@ module.exports = {
 					console.log('error:', error); // Print the error if one occurred
 					console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
                     console.log('href:', response.request.href); //Page we want our browser to load
-					console.log('body:', body); // Print the HTML for the Google homepage.
+					//console.log('body:', body); // Print the HTML for the Google homepage.
 
                     var url = response.request.href;
                     success(url);
@@ -116,10 +116,9 @@ module.exports = {
                     if (err) {
                         console.log("error in Post", err);
                     }else{
-                        //console.log("This should be the access token stuff"+JSON.parse(body));
-                        console.log("This should be the access token stuff"+body.toString());
-
-                        success(body);
+                        //console.log("This should be the access token stuff"+body.toString());
+						let convertedData = JSON.parse(body);
+                        success(convertedData);
                     }
                 }
             );
@@ -140,12 +139,18 @@ module.exports = {
                     console.log('href:', response.request.href); //Page we want our browser to load
                     console.log('body:', body); // Print the HTML for the Google homepage.
 
-                    var url = response.request.href;
-                    success(url);
+                    let convertedData = JSON.parse(body);
+                    //var url = response.request.href;
+                    success(convertedData);
                 });
         });
     }
-
+    //MORE ideas for instagram - request medias (last 20)
+	//https://api.instagram.com/v1/users/self/media/recent/?access_token=45481514.14054d3.d69d14db497c4f7fab63a4cb5104fa3b
+	//Get average likes for last 20 photos
+	//average comments
+	//max likes, max comments
+	//Number of tags used
     
 };
 

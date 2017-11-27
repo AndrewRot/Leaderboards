@@ -96,17 +96,14 @@ class SignUpBody extends Component {
 
     //Successful posts and gets with jquery!
     $.post("http://localhost:9000/signup",{first: first, last: last, username: user, email: email, password: password, city: city, zip: zip, state: state, country: country}, function(data){
-                alert("Sign up success: "+data);
-    });
+        alert("Sign up success: "+data);
+        //convert response to js object
+        const convertedData = JSON.parse(data);
+        console.log("Token: "+convertedData[0].token);
 
-    //move this to another page
-    /*$.get("http://localhost:9000/login",{email: email, password: password}, function(data, status){
-            
-          alert("Response from server was ["+status+"] and the data:  " + data);
-          //now assign this to the proper variables in react component
-          console.log("Response from server was ["+status+"] and the data:  " + data);
-              //use json.parse to make it into a js object - might need this in server!
-    });*/
+        //write to our cookie!
+        updateCookie(convertedData[0]); //not working properly
+    });
 
   //***** Update this later so that it goes to the second page of sign up stuff
     window.location="/Browse"; //reroute user to browse leaderboards -
@@ -247,6 +244,30 @@ class SignUpBody extends Component {
   
 
   }
+}
+
+
+//write to the actual cookie
+//updateCookie = (convertedData) => {
+function updateCookie(convertedData) {
+    const cookies = new Cookies();
+    cookies.set('userID', convertedData.userID, { path: '/' });
+    cookies.set('firstname', convertedData.firstname, { path: '/' });
+    cookies.set('lastname', convertedData.lastname, { path: '/' });
+    cookies.set('username', convertedData.username, { path: '/' });
+    cookies.set('email', convertedData.email.replace(/%40/i, '@'), { path: '/' });
+    cookies.set('city', convertedData.city.replace(/%20/i, ' '), { path: '/' });
+    cookies.set('state', convertedData.state.replace(/%20/i, ' '), { path: '/' });
+    cookies.set('country', convertedData.country.replace(/%20/i, ' '), { path: '/' });
+    cookies.set('token', convertedData.token, { path: '/' });
+    cookies.set('loggedin', true, { path: '/' });
+
+    var d = new Date();
+    d.setTime(d.getTime() + (1*24*60*60*1000)); //expires in 1 day  [days * hours * minutes * seconds * milli secs]
+    var expires = d.toUTCString();
+    cookies.set('expires', expires, { path: '/' });
+
+    console.log(document.cookie);
 }
 
 

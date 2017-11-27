@@ -62,7 +62,7 @@ app.post('/signup',(req,res) =>{
   //Get the next available userID
   var p1 = SQL.getNextUserID(connection);
   p1.then(function(newID) { // Found the next available ID!
-    var query = "insert into Accounts values(" +newID+",'"+first+"','"+last+"','"+username+"','"+email+"','"+password+"','"+city+"','"+state+"','"+country+"','"+token+"');";
+    var query = "insert into Accounts values(" +newID+",'"+first+"','"+last+"','"+username+"','"+email+"','"+password+"','"+city+"','"+state+"','"+country+"','"+token+"' , '' , '', '');";
     console.log("QUERY:" +query);
     connection.query(query, function (err, rows, fields) {
       if (err) throw err
@@ -127,28 +127,35 @@ app.get('/login',(req,res) =>{
 //Fetch the instagram access token and basic user data - still need ot fetch actual data
 app.post('/fetchInstaData',(req,res) =>{
     console.log("URL: "+ req.url );
-
     let code=req.body.code;
     let boardID=req.body.boardID;
     let userID=req.body.userID;
 
-
-    var uri = req.url.replace("/fetchInstaData?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+    //var uri = req.url.replace("/fetchInstaData?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
     //let code = uri.replace("/code=/i", '');
     console.log("code: "+ code + " boardID: "+ boardID +" userID: "+ userID  );
 
     //Get the access token and user info!
     var p1 = APIs.getInstagramAccessToken(code);
     p1.then(function(APIData) { // User succesfully logged in!
-        //console.log('Instagram User Info: ', JSON.stringify(data));
-
-        //Not insert data into our database!
-        SQL.updateInstagramData(boardID, userID, APIData, connection);
-
-        res.status(200).end(JSON.stringify(APIData)); //might not need to send data back.. send next page back
-
+        console.log('**[1], Instagram User Info: ', APIData.toString());
+        return SQL.updateInstagramProfileData(boardID, userID, APIData, connection);         //insert access token and profile information to database
     }, function(reason) {
         console.log("Failed to login: "+reason); // Error!
+    })
+    //Chained Promise - Now go retrieve basic profile data (followers, follows, photos)
+    .then(function (access_token) {
+        console.log("**[2], access_token: "+access_token);
+        return APIs.getInstagramStats(access_token); //retrieve other information
+    })
+    .then(function (APIData) {
+        console.log("**[3], APIData: "+APIData);
+        return SQL.updateInstagramData(boardID, userID, APIData, connection); //insert other info to the database
+    })
+    .then(function (data) {
+        console.log("**[4], Now update the user to follow this board in the database boardaccountlink table");
+        SQL.followBoard(boardID, userID, connection); //Update database
+        res.status(200).end(JSON.stringify("GOOD")); //might not need to send data back.. send next page back
     });
 
 });
@@ -308,12 +315,17 @@ app.get('/connectto/*',(req,res) =>{
   var p1 = APIRouter.connectToAPI(boardID, email, password);
   p1.then(function(APIData) {
     console.log("--------------: "+ APIData);
-    database.insertData(boardID, userID, APIData, connection);
+    return database.insertData(boardID, userID, APIData, connection);
     //send back data
     //res.end("end");
   }, function(reason) {
     console.log("fail: "+reason); // Error!
-  });
+  })
+      .then(function (data) {
+          console.log("Now update the user to follow this board in the database boardaccountlink table");
+          SQL.followBoard(boardID, userID, connection); //Update database
+          res.status(200).end(JSON.stringify("GOOD")); //might not need to send data back.. send next page back
+      });;
 
 
   //Return a successful connection;
