@@ -128,7 +128,9 @@ class BrowseBody extends Component {
     const boardID = this.state.boardID;
     const url = "http://localhost:9000/connectto/"+boardID;
 
-
+    // Save data to sessionStorage - so we can load it in the redirect page to send scores to the database
+      sessionStorage.setItem('boardID', boardID.toString());
+      sessionStorage.setItem('userID', userID.toString()); //Replace later
 
     $.get(url,{userID: userID, email: email, password: password}, function(data){
         alert("Logging into "+email+"'s account on Github");
@@ -242,17 +244,12 @@ class BrowseBody extends Component {
                      <p>{board.description}</p>
                       <p>
                         <Button bsStyle="primary" name={board.boardID} block onClick={boundClick}>Connect</Button>
-                          <form action="https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost&response_type=token">
-                              <input type="submit" value="INSTAGRAM" />
-                          </form>
-
                       </p>
                    </Thumbnail>
                 </Col>
                 )
               }, this)}
           </Grid>
-
 
 
       </div>
@@ -294,27 +291,6 @@ https://3fybkfrr10x3tgp41p45lr3a-wpengine.netdna-ssl.com/wp-content/uploads/2016
 <option value={name}>{name}</option>
 
 
-<FormGroup controlId="city" bsSize="large" >
-            <ControlLabel>City</ControlLabel>
-            <FormControl componentClass="select" name="city"  value={this.state.city} onChange={this.handleChange}>
-            </FormControl>
-          </FormGroup>
-<div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
+
 
 */

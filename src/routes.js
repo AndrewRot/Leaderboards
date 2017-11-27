@@ -27,6 +27,7 @@ const Routes = (props) => (
       <Route path="/SignOut" component={MainSignOutContainer} />
       <Route path="/AuthInstagram" component={AuthInstagram} />
 
+
   </Router>
 );
 

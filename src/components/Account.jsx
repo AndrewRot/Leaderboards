@@ -58,8 +58,8 @@ class Account extends Component {
           //console.log(document.cookie);
 
           //Updating component state values
-          this.setState({first: convertedData.first});
-          this.setState({last: convertedData.last});
+          this.setState({first: convertedData.firstname});
+          this.setState({last: convertedData.lastname});
           this.setState({username: convertedData.username});
           this.setState({email: convertedData.email});
           this.setState({boards: convertedData.boards}); //this might not be OK - might wanna just save boards in the cookie
@@ -69,8 +69,8 @@ class Account extends Component {
 
   render() {
     let USERNAME = getCookie("username");
-    let FIRSTNAME = getCookie("firstName");
-    let LASTNAME = getCookie("lastName");
+    let FIRSTNAME = getCookie("firstname");
+    let LASTNAME = getCookie("lastname");
     let EMAIL = getCookie("email");
 
     let CITY = getCookie("city");

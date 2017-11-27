@@ -257,7 +257,7 @@ class LeaderboardBody extends Component {
 
 
 function getCookie(cname) {
-  //console.log("Looking in cookie for: "+cname);
+    console.log("Leaderboard cookie function: Looking in cookie for: "+cname);
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
@@ -268,11 +268,11 @@ function getCookie(cname) {
         }
         if (c.indexOf(name) === 0) {
           var str = c.substring(name.length, c.length);
-          //console.log("found it: "+str);
+          console.log("found it: "+str);
             return str;
         }
     }
-    //console.log("Did not find it");
+    console.log("Did not find it");
     return "";
 }
 

@@ -50,8 +50,49 @@ module.exports = {
 		    if (err) throw err
 		    console.log('Inserted: ', rows)
 		})
+    },
 
 
+    //insert data to instagram board
+    updateInstagramData: function(boardID, userID, APIData, connection) {
+        console.log("Insert to Instagram");
+
+        //TO-DO list for these things
+        //Also, replace hardcoded Followers with the key value of the object
+        //Move these queries to seperate files - turn them into a list
+        //-then iterate through the list of queries in a for loop
+        //Think of elequint way to pass along the scoreID - maybe make this a pairing, like a name and an ID -
+        //Kongregate does it by score name - so if that is unique.. boardID/scoreName would make it unique..
+
+        //Insert followers stats
+        var query = "insert into Scores values("+boardID+", "+userID+", 1, "+APIData.counts.followed_by+", 'Followers', CURDATE () ) " +
+            "ON DUPLICATE KEY UPDATE " +
+            "score = GREATEST(score, "+ APIData.counts.followed_by +")";
+        console.log("QUERY:" +query);
+        connection.query(query, function (err, rows, fields) {
+            if (err) throw err
+            console.log('Inserted: ', rows)
+        })
+
+        //Insert following stats
+        var query = "insert into Scores values("+boardID+", "+userID+", 2, "+APIData.counts.follows+", 'Following', CURDATE () ) " +
+            "ON DUPLICATE KEY UPDATE " +
+            "score = GREATEST(score, "+APIData.counts.follows+")";
+        console.log("QUERY:" +query);
+        connection.query(query, function (err, rows, fields) {
+            if (err) throw err
+            console.log('Inserted: ', rows)
+        })
+
+        //Insert media stats
+        var query = "insert into Scores values("+boardID+", "+userID+", 3, "+APIData.counts.media+", 'Photos Taken', CURDATE () ) " +
+            "ON DUPLICATE KEY UPDATE " +
+            "score = GREATEST(score, "+APIData.counts.media+")";
+        console.log("QUERY:" +query);
+        connection.query(query, function (err, rows, fields) {
+            if (err) throw err
+            console.log('Inserted: ', rows)
+        })
     },
 
     /** getNextUserID

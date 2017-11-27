@@ -12,6 +12,8 @@ var database = require("./DatabaseUtility.js");
 var APIRouter = require("./APIRouter.js");
 var utils = require("./Utilities.js");
 var SQL = require("./sqlHelpers.js");
+var APIs = require("./APIs.js");
+
 
 
 
@@ -119,6 +121,36 @@ app.get('/login',(req,res) =>{
   }, function(reason) {
     console.log("Failed to login: "+reason); // Error!
   });
+});
+
+
+//Fetch the instagram access token and basic user data - still need ot fetch actual data
+app.post('/fetchInstaData',(req,res) =>{
+    console.log("URL: "+ req.url );
+
+    let code=req.body.code;
+    let boardID=req.body.boardID;
+    let userID=req.body.userID;
+
+
+    var uri = req.url.replace("/fetchInstaData?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+    //let code = uri.replace("/code=/i", '');
+    console.log("code: "+ code + " boardID: "+ boardID +" userID: "+ userID  );
+
+    //Get the access token and user info!
+    var p1 = APIs.getInstagramAccessToken(code);
+    p1.then(function(APIData) { // User succesfully logged in!
+        //console.log('Instagram User Info: ', JSON.stringify(data));
+
+        //Not insert data into our database!
+        SQL.updateInstagramData(boardID, userID, APIData, connection);
+
+        res.status(200).end(JSON.stringify(APIData)); //might not need to send data back.. send next page back
+
+    }, function(reason) {
+        console.log("Failed to login: "+reason); // Error!
+    });
+
 });
 
 
@@ -254,7 +286,7 @@ app.get('/leaderboard',(req,res) =>{
 app.get('/connectto/*',(req,res) =>{
   console.log("API URL: "+ req.url );
   //parse our url to get the fields we want
-  //Starting URL: /connectto/3?username=andrewrot&password=1one124
+  //Starting URL: /connectto/3?username=andrewrot&password=1fivesive
   var uri = req.url.replace("/connectto/", ''); //strip out the path  
   var uri = uri.replace(/userID=/i, ''); //strip out the email and password name fields
   var uri = uri.replace(/email=/i, ''); //strip out the email and password name fields
@@ -301,7 +333,7 @@ app.get('/ConnectToCustomAPI/*',(req,res) =>{
   //Connect to API, then send data to database directly. Pass the connection as well
   var p1 = APIRouter.connectToAPI(boardID, '', ''); //email and password blank
   p1.then(function(APIData) {
-    console.log("--------------: "+ APIData); //This should be html login page
+    console.log("--------------: "+ APIData); //This is the redirect link
     res.status(200).end(APIData);
   }, function(reason) {
     console.log("fail: "+reason); // Error!

@@ -95,13 +95,19 @@ module.exports = {
                     success(url);
 				});
 
-            ///USE THIS with the code returned in the URL
-            //https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=code
-            /*request.post(
+
+		})
+    },
+
+    getInstagramAccessToken: function(code) {
+
+        return new Promise(function (success, fail) {
+
+			request.post(
                 { form: { client_id: '14054d3b12e14fdba3031ba55a5a5885',
                     client_secret: '8f1113b89c434eacafd4b0f9d3c0a5d1',
                     grant_type: 'authorization_code',
-                    redirect_uri: 'http://localhost:9000/Browse',
+                    redirect_uri: 'http://localhost:9000/AuthInstagram',
                     code: code
                 },
                     url: 'https://api.instagram.com/oauth/access_token'
@@ -110,10 +116,77 @@ module.exports = {
                     if (err) {
                         console.log("error in Post", err);
                     }else{
-                        console.log(JSON.parse(body));
+                        //console.log("This should be the access token stuff"+JSON.parse(body));
+                        console.log("This should be the access token stuff"+body.toString());
+
+                        success(body);
                     }
                 }
-            );*/
+            );
+        })
+    },
+
+	//Fetch the instagram statistics
+    //https://api.instagram.com/v1/users/self/?access_token=45481514.14054d3.d69d14db497c4f7fab63a4cb5104fa3b
+    getInstagramStats: function(access_token) {
+
+        return new Promise(function (success, fail) {
+            request({followAllRedirects: true,
+                    url: 'https://api.instagram.com/v1/users/self/?access_token='+access_token},
+                function (error, response, body) {
+                    //console.log('****************************** First response *************************');
+                    console.log('error:', error); // Print the error if one occurred
+                    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                    console.log('href:', response.request.href); //Page we want our browser to load
+                    console.log('body:', body); // Print the HTML for the Google homepage.
+
+                    var url = response.request.href;
+                    success(url);
+                });
+        });
+    }
+
+    
+};
+
+
+
+//WORKS - Grabs the HTML of the new page... grab the href fromt he header and updated the user's window
+/*request({
+        followAllRedirects: true,
+        url: 'https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/AuthInstagram&response_type=code'
+    },
+    function (error, response, body) {
+        //console.log('****************************** First response *************************');
+        console.log('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('href:', response.request.href); //Page we want our browser to load
+        console.log('body:', body); // Print the HTML for the Google homepage.
+
+        var url = response.request.href;
+        success(url);
+    });*/
+
+
+///USE THIS with the code returned in the URL
+//https://api.instagram.com/oauth/authorize/?client_id=14054d3b12e14fdba3031ba55a5a5885&redirect_uri=http://localhost:9000/Browse&response_type=code
+/*request.post(
+    { form: { client_id: '14054d3b12e14fdba3031ba55a5a5885',
+        client_secret: '8f1113b89c434eacafd4b0f9d3c0a5d1',
+        grant_type: 'authorization_code',
+        redirect_uri: 'http://localhost:9000/Browse',
+        code: code
+    },
+        url: 'https://api.instagram.com/oauth/access_token'
+    },
+    function (err, response, body) {
+        if (err) {
+            console.log("error in Post", err);
+        }else{
+            console.log(JSON.parse(body));
+        }
+    }
+);*/
 
 //This gets a 302 direct message - however, not sure how to handle that reponse?
 /*
@@ -156,12 +229,3 @@ module.exports = {
 
 			req.end();
 */
-
-		})
-    }
-
-    
-};
-
-
-

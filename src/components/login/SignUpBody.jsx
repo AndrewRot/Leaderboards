@@ -96,9 +96,7 @@ class SignUpBody extends Component {
 
     //Successful posts and gets with jquery!
     $.post("http://localhost:9000/signup",{first: first, last: last, username: user, email: email, password: password, city: city, zip: zip, state: state, country: country}, function(data){
-           
                 alert("Sign up success: "+data);
-            
     });
 
     //move this to another page

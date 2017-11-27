@@ -10,8 +10,8 @@ drop table Scores;
 /*   *********************************************/
 create table Accounts(
 	userID  int,
-	firstName varchar(20),
-	lastName varchar(20),
+	firstname varchar(20),
+	lastname varchar(20),
 	username varchar(20),
 	email varchar(30),
 	password varchar(20),
@@ -19,12 +19,16 @@ create table Accounts(
 	state varchar(20),
 	country varchar(20),
 	token varchar(80),
+	instagram_access_token varchar(80),
+    instagram_id varchar(10),
+    instagram_username varchar(20),
 	PRIMARY KEY (userID)
 );
-insert into Accounts values(1, 'Andrew', 'Rottier', 'acrottier', 'andrewrottier95@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123');
-insert into Accounts values(2, 'Harry', 'Kane', 'hkane', 'kane@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123');
-insert into Accounts values(3, 'Berny', 'Sanders', 'bsanders', 'sanders@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123');
-insert into Accounts values(4, 'Jim', 'Bo', 'jimbo', 'jbo@gmail.com', 'password', 'Montreal', 'CA', 'Canada', '123');
+/* insert into Accounts values(1, 'Andrew', 'Rottier', 'acrottier', 'andrewrottier95@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123', '45481514.14054d3.d69d14db497c4f7fab63a4cb5104fa3b', '45481514', 'andrewrottier'); */
+insert into Accounts values(1, 'Andrew', 'Rottier', 'acrottier', 'andrewrottier95@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123', '', '', '');
+insert into Accounts values(2, 'Harry', 'Kane', 'hkane', 'kane@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123', '', '', '');
+insert into Accounts values(3, 'Berny', 'Sanders', 'bsanders', 'sanders@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123', '', '', '');
+insert into Accounts values(4, 'Jim', 'Bo', 'jimbo', 'jbo@gmail.com', 'password', 'Montreal', 'CA', 'Canada', '123', '', '', '');
 
 
 create table Boards(
@@ -37,7 +41,7 @@ create table Boards(
 );
 insert into Boards values(1, 'Fantasy Soccer', 'Fantasy soccer, goals, assists, other stats', '/images/boardLogos/fantasysoccer.png', 'N');
 insert into Boards values(2, 'Netflix', 'Netflix movies watched', '/images/boardLogos/netflix.png', 'N');
-insert into Boards values(3, 'Github', 'Lines of code committed', '/images/boardLogos/github.png', 'N');
+insert into Boards values(3, 'Github', 'Open source domination', '/images/boardLogos/github.png', 'N');
 insert into Boards values(4, 'Instagram', 'Social media stats', '/images/boardLogos/instagram.png', 'Y');
 
 
