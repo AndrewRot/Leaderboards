@@ -130,12 +130,12 @@ module.exports = {
         });
     },
 
-    /**
+    /** followBoard: adds teh board to the user's followed boards - if they already arent following
      *
      */
     followBoard: function (boardID, userID, connection) {
         return new Promise(function (success, fail) {
-            var query = "insert into BoardAccountLink values(" + userID + "," + boardID + ");";
+            var query = "insert IGNORE into BoardAccountLink values(" + userID + "," + boardID + ");";
             console.log("QUERY:" + query);
             connection.query(query, function (err, rows, fields) {
                 if (err) throw err
@@ -166,7 +166,74 @@ module.exports = {
         })
      },
 
-     /** login
+    /** signUp
+     *  Signs up the user given the information he passed in from the forms
+     *  @param {Connection} connection: the connection to the database
+     *  @param {fields - generic} all the other fields to be inserted into the database
+     *  return information regarding a successful insert to the db
+     *  *Not currently using the zip code field - will need to add spot for this in database and refactor
+     */
+    signUp: function(connection, newID, first, last, username, email, password, city, zip, state, country, token) {
+        return new Promise(function (success, fail) {
+            //The last three fields are for instagram account info - since they haven't linked yet, leave blank
+            var query = "insert into Accounts values(" +newID+",'"+first+"','"+last+"','"+username+"','"+email+"','"+password+"','"+city+"','"+state+"','"+country+"','"+token+"' , '' , '', '');";
+            console.log("QUERY:" +query);
+            connection.query(query, function (err, rows, fields) {
+                if (err) {
+                    fail(err); //return fail or throw error.. figure out
+                    throw err
+                }
+                console.log('Created Account: ', rows);
+                success(rows);
+            })
+        })
+    },
+
+    /** fetchBoards
+     *  fetch last 9 boards to follow
+     */
+    fetchBoards: function(connection) {
+        return new Promise(function(success, fail) {
+            var query = "Select * from Boards limit 9";
+            console.log("QUERY:" +query);
+            connection.query(query, function (err, rows, fields) {
+                if (err) throw err
+                success(rows); //first argument must be a string or buffer
+            })
+        })
+    },
+
+    /**
+     *
+     */
+    getBoardStats: function (connection, boardID) {
+        return new Promise(function (success, fail) {
+            var query = "Select DISTINCT scoreID, scoreName from Scores S where S.boardID = "+boardID + "  ";
+            console.log("QUERY: " +query);
+            connection.query(query, function (err, rows, fields) {
+                if (err) throw err
+                console.log('Fetched board statTypes: ', JSON.stringify(rows));
+                success(rows); //first argument must be a string or buffer
+            })
+        })
+    },
+
+    /** getMyBoardInfo
+     *  This infomation is needed when the user goes to teh leaderboard page, we need to populate the dropdown menus with their board information
+     */
+    getMyBoardInfo: function(connection, userID) {
+        return new Promise(function (success, fail) {
+            var query = "Select * from BoardAccountLink BAL, Boards B where userID ="+userID + " and B.boardID = BAL.boardID";
+            console.log("QUERY:" +query);
+            connection.query(query, function (err, rows, fields) {
+                if (err) throw err
+                console.log('Fetched boards: ', JSON.stringify(rows));
+                success(rows); //first argument must be a string or buffer
+            })
+        })
+    },
+
+    /** login
      * Attempts to log a user in. If successful, assigns the user a new Token, updates it in the database, then we requery to get the full set of data to return to the client
      * @param {Connection} connection: the connection to the database 
      * @param {Email} the email of the user

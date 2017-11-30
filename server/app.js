@@ -15,8 +15,6 @@ var SQL = require("./sqlHelpers.js");
 var APIs = require("./APIs.js");
 
 
-
-
 // *************************************************************
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -36,60 +34,63 @@ app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
 
 
 
-//Middleware function before every server call. Every time a page is loaded - perform these tasks
-// 1.) connect to the database
-// Concern - when is a good time to kill the connection? (they can perform multple queries from one page) conncetion.end()
-app.all('*', (req, res, next) => {
+/** Middleware function before every server call. Every time a page is loaded - perform these tasks
+ * 1.) connect to the database
+ * 2.) [NOT YET IMPLEMENTED] Always check the user's token against the database. If it matches, we are goo to continue.
+ *     Otherwise, we should not continue - reroute the user to the signin page
+ * Concern - when is a good time to kill the connection? (they can perform multple queries from one page) conncetion.end()
+*/
+ app.all('*', (req, res, next) => {
     connection = database.connectToDatabase();
+
+    /* PSEUDO code to fill in later
+      var p1 = SQL.confirmProperToken(connection, token);
+      p1.then(function(data) { // proper token - continie
+        console.log("All set!");
+        res.status(200).send(JSON.stringify(data));
+      }, function(reason) { // no token found indatabase - send them to signin screen
+        res.status(200).send(JSON.stringify("please sign in"));  //update this to be the signing url
+      });
+     */
+
     next();
 });
 
 
-/* Handle signing up from the client */
-//MAKE SURE COOKIE is holding the token!!
+/** Handle signing up from the client
+ * 1: get all of the parameters from the sign in page
+ * 2: generate the next available user ID
+ * 3: Now insert the data to our accounts database table
+ * 4: Signin with the user's credentials and return the info to the client
+ */
 app.post('/signup',(req,res) =>{
-  var first=req.body.first;
-  var last=req.body.last;
-  var username=req.body.username;
-  var email=req.body.email;
-  var password=req.body.password;
-  var city=req.body.city;
-  var zip=req.body.zip;
-  var state=req.body.state;
-  var country=req.body.country;
-  var token= utils.generateToken();
+  let first=req.body.first;
+  let last=req.body.last;
+  let username=req.body.username;
+  let email=req.body.email;
+  let password=req.body.password;
+  let city=req.body.city;
+  let zip=req.body.zip;
+  let state=req.body.state;
+  let country=req.body.country;
+  let token= utils.generateToken(); //This might be better in a promise, even though it's just a function to generate a random string.
 
   //Get the next available userID
   var p1 = SQL.getNextUserID(connection);
   p1.then(function(newID) { // Found the next available ID!
-    var query = "insert into Accounts values(" +newID+",'"+first+"','"+last+"','"+username+"','"+email+"','"+password+"','"+city+"','"+state+"','"+country+"','"+token+"' , '' , '', '');";
-    console.log("QUERY:" +query);
-    connection.query(query, function (err, rows, fields) {
-      if (err) throw err
-      console.log('Created Account: ', rows)
-    })
+    console.log("New Id found:" +newID);
+    return SQL.signUp(connection, newID, first, last, username, email, password, city, zip, state, country, token)
   }, function(reason) {
     console.log("Failed to create account: "+reason); // Error!
-  });
-
-  res.status(200).send('Good');
-});
-
-
-//Post an update. The user as followed a board! probably name the table something, push name of board
-app.post('/followboard',(req,res) =>{
-  let userid=parseInt(req.body.userid);  //user to add board to and convert it to an integer
-  let boardToFollow=req.body.board; //this should be the string of the board we wanna push to accounts.boards array
-  console.log("userid: "+userid+" Board to follow: "+boardToFollow);
-  //insert into BoardAccountLink values(1, 1);
-  var query = "insert into BoardAccountLink values(" +userid+","+boardToFollow+");";
-  console.log("QUERY:" +query);
-  connection.query(query, function (err, rows, fields) {
-    if (err) throw err
-
-    console.log('Inserted: ', rows)
+  }) //if signing up went successful - log the user in and return the data
+  .then(function (data) {
+      console.log("Signing up, succesful. Now attempting to sign in: ");
+      return SQL.login(connection, email, password);
   })
-  res.status(200).send('Good');
+  .then(function (data) {
+      console.log("Signing in successful, data: "+data);
+      res.status(200).send(JSON.stringify(data)); //send back the user info in string form
+  });
 });
 
 
@@ -130,9 +131,6 @@ app.post('/fetchInstaData',(req,res) =>{
     let code=req.body.code;
     let boardID=req.body.boardID;
     let userID=req.body.userID;
-
-    //var uri = req.url.replace("/fetchInstaData?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
-    //let code = uri.replace("/code=/i", '');
     console.log("code: "+ code + " boardID: "+ boardID +" userID: "+ userID  );
 
     //Get the access token and user info!
@@ -161,83 +159,78 @@ app.post('/fetchInstaData',(req,res) =>{
 });
 
 
-
-//fetchboards from the database for the browse page
+/** fetchboards from the database for the browse page
+ * This is called when the user is on the browse page - populate with the returned data
+ */
 app.get('/fetchboards',(req,res) =>{
-   var query = "Select * from Boards limit 9";
-  console.log("QUERY:" +query);
-  connection.query(query, function (err, rows, fields) {
-    if (err) throw err
-    //console.log('Fetched boards: ', JSON.stringify(rows));
-    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
-  })
+    var p1 = SQL.fetchBoards(connection);
+    p1.then(function(boardData) {
+        console.log("Board info fetched: "+ boardData);
+        res.status(200).end(JSON.stringify(boardData));
+    }, function(reason) {
+        console.log("fail: "+reason); // Error!
+    });
 });
 
 //getmy board info getmyboardinfo
 app.get('/getmyboardinfo',(req,res) =>{
   console.log("/URL: "+ req.url );
-  var uri = req.url.replace("/getmyboardinfo?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
-  var uri = uri.replace(/userid=/i, ''); //strip out the email and password name fields
+  let uri = req.url.replace("/getmyboardinfo?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+   uri = uri.replace(/userid=/i, ''); //strip out the email and password name fields
   //gablergab&dude%40wpi.edu
-  //Desired, variables holding individual strings
-  var userid=uri; 
+  let userID=uri;  //Desired, variables holding individual strings
 
-   var query = "Select * from BoardAccountLink BAL, Boards B where userID ="+userid + " and B.boardID = BAL.boardID";
-  console.log("QUERY:" +query);
-  connection.query(query, function (err, rows, fields) {
-    if (err) throw err
-    console.log('Fetched boards: ', JSON.stringify(rows));
-    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
-  })
+  var p1 = SQL.getMyBoardInfo(connection, userID);
+  p1.then(function(myBoardInfo) {
+      console.log("This user's board information: "+ myBoardInfo);
+      res.status(200).end(JSON.stringify(myBoardInfo));
+  }, function(reason) {
+      console.log("fail: "+reason); // Error!
+  });
 });
 
 
 app.get('/getBoardStats',(req,res) =>{
-  console.log("URL: "+ req.url );
-  //parse our url to get the fields we want
-  //Starting URL: /getBoardStats?boardID=1
-  var uri = req.url.replace("/getBoardStats?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
-  var uri = uri.replace(/boardID=/i, ''); //strip out
+  console.log("URL: "+ req.url ); //Starting URL: /getBoardStats?boardID=1
+  let uri = req.url.replace("/getBoardStats?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+  uri = uri.replace(/boardID=/i, ''); //strip out
+  let boardID=uri;
 
-  //Desired, variables holding individual strings
-  var boardID=uri;
-  //console.log("boardID = "+boardID);
-
-  var query = "Select DISTINCT scoreID, scoreName from Scores S where S.boardID = "+boardID + "  ";
-  console.log("QUERY: " +query);
-  connection.query(query, function (err, rows, fields) {
-    if (err) throw err
-    console.log('Fetched board statTypes: ', JSON.stringify(rows));
-    res.status(200).end(JSON.stringify(rows)); //first argument must be a string or buffer
-  })
+  var p1 = SQL.getBoardStats(connection, boardID);
+  p1.then(function(boardStats) {
+      console.log("This board stats are: "+ boardStats);
+      res.status(200).end(JSON.stringify(boardStats));
+  }, function(reason) {
+      console.log("fail: "+reason); // Error!
+  });
 });
 
 
 //When we load the leaderboard page based on filters from the filter section!
 app.get('/leaderboard',(req,res) =>{
   console.log("URL: "+ req.url );
-  var uri = req.url.replace("/leaderboard?", '').replace(/%20/i, ' ');//replace space char with a space; //strip out the path  //username=gablergab&email=dude%40wpi.edu
-  var uri = uri.replace(/boardID=/i, ''); //strip out
-  var uri = uri.replace(/scoreID=/i, ''); //strip out
-  var uri = uri.replace(/statTime=/i, ''); //strip out
-  var uri = uri.replace(/statLocation=/i, ''); //strip out
-  var uri = uri.replace(/userID=/i, ''); //strip out
-  var uri = uri.replace(/city=/i, ''); //strip out
-  var uri = uri.replace(/state=/i, ''); //strip out
-  var uri = uri.replace(/country=/i, ''); //strip out
+  let uri = req.url.replace("/leaderboard?", '').replace(/%20/i, ' ');//replace space char with a space; //strip out the path  //username=gablergab&email=dude%40wpi.edu
+   uri = uri.replace(/boardID=/i, ''); //strip out
+   uri = uri.replace(/scoreID=/i, ''); //strip out
+   uri = uri.replace(/statTime=/i, ''); //strip out
+   uri = uri.replace(/statLocation=/i, ''); //strip out
+   uri = uri.replace(/userID=/i, ''); //strip out
+   uri = uri.replace(/city=/i, ''); //strip out
+   uri = uri.replace(/state=/i, ''); //strip out
+   uri = uri.replace(/country=/i, ''); //strip out
 
   //***** add user id to this maybe here
-  var uri = uri.split('&');
+  let uriSplit = uri.split('&');
 
   //Desired, variables holding individual strings
-  var boardID=uri[0];
-  var scoreID=uri[1].replace(/%20/i, ' ');
-  var statTime=uri[2];
-  var statLocation=uri[3];
-  var userID=uri[4];
-  var city=uri[5];
-  var state=uri[6];
-  var country=uri[7];
+  let boardID=uriSplit[0];
+  let scoreID=uriSplit[1].replace(/%20/i, ' ');
+  let statTime=uriSplit[2];
+  let statLocation=uriSplit[3];
+  let userID=uriSplit[4];
+  let city=uriSplit[5];
+  let state=uriSplit[6];
+  let country=uriSplit[7];
   //Generate locational segment of the query
   var locationalQuery = " ";//be default lets load this data globally (that means no content here)
   switch(statLocation) {
@@ -294,19 +287,20 @@ app.get('/connectto/*',(req,res) =>{
   console.log("API URL: "+ req.url );
   //parse our url to get the fields we want
   //Starting URL: /connectto/3?username=andrewrot&password=1fivesive
-  var uri = req.url.replace("/connectto/", ''); //strip out the path  
-  var uri = uri.replace(/userID=/i, ''); //strip out the email and password name fields
-  var uri = uri.replace(/email=/i, ''); //strip out the email and password name fields
-  var uri = uri.replace(/password=/i, ''); //strip out the email and password name fields
+  let uri = req.url.replace("/connectto/", ''); //strip out the path
+   uri = uri.replace(/userID=/i, ''); //strip out the email and password name fields
+   uri = uri.replace(/email=/i, ''); //strip out the email and password name fields
+   uri = uri.replace(/password=/i, ''); //strip out the email and password name fields
 
-  var uriSplit = uri.split('?');//break into [#, username=XXX&password=XXX]
-  var boardID = uriSplit[0]; //first element is the boardID
+    //Messy - lets clean this up soon
+  let uriSplit1 = uri.split('?');//break into [#, username=XXX&password=XXX]
+  let boardID = uriSplit1[0]; //first element is the boardID
 
-  var uri = uriSplit[1].split('&'); //now we have an array of the email and password
-  //Desired, variables holding individual strings
-  var userID=uri[0];
-  var email=uri[1].replace(/%40/i, '@'); //conver this back to @ from %40
-  var password=uri[2];
+  let uriSplit = uriSplit[1].split('&'); //now we have an array of the email and password
+//Desired, variables holding individual strings
+  let userID=uriSplit[0];
+  let email=uriSplit[1].replace(/%40/i, '@'); //conver this back to @ from %40
+  let password=uriSplit[2];
 
   console.log("boardID = "+boardID+ " userID = "+userID+ ", email = "+email+", password = ***");
   
@@ -321,12 +315,11 @@ app.get('/connectto/*',(req,res) =>{
   }, function(reason) {
     console.log("fail: "+reason); // Error!
   })
-      .then(function (data) {
-          console.log("Now update the user to follow this board in the database boardaccountlink table");
-          SQL.followBoard(boardID, userID, connection); //Update database
-          res.status(200).end(JSON.stringify("GOOD")); //might not need to send data back.. send next page back
-      });;
-
+  .then(function (data) {
+      console.log("Now update the user to follow this board in the database boardaccountlink table");
+      SQL.followBoard(boardID, userID, connection); //Update database
+      res.status(200).end(JSON.stringify("GOOD")); //might not need to send data back.. send next page back
+  });
 
   //Return a successful connection;
   res.status(200).send('Good');

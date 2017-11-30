@@ -3,6 +3,7 @@ import './css/SignUpBody.css';
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 //import FacebookButton from './FacebookButton.react'; 
 //import UploadImage from './UploadImage.react.js'; ** Or we will pull this image from Facebook after we set up authentication
+import Cookies from 'universal-cookie';
 
 
 import $ from 'jquery';
@@ -39,8 +40,6 @@ function LogoutButton(props) {
     </button>
   );
 }
-
-
 
 
 //This file is just using the regular bootstrap css file. Not fancy pants react-bootstraps here
@@ -95,18 +94,22 @@ class SignUpBody extends Component {
     const country = this.state.country;
 
     //Successful posts and gets with jquery!
-    $.post("http://localhost:9000/signup",{first: first, last: last, username: user, email: email, password: password, city: city, zip: zip, state: state, country: country}, function(data){
+    $.post("http://localhost:9000/signup",{first: first, last: last, username: user, email: email, password: password, city: city, zip: zip, state: state, country: country}, function(data, status){
+        alert("Response from server was ["+status+"] and the data:  " + data);
         alert("Sign up success: "+data);
+
+
         //convert response to js object
         const convertedData = JSON.parse(data);
         console.log("Token: "+convertedData[0].token);
 
         //write to our cookie!
         updateCookie(convertedData[0]); //not working properly
+        window.location="/Browse"; //reroute user to browse leaderboards -
     });
 
   //***** Update this later so that it goes to the second page of sign up stuff
-    window.location="/Browse"; //reroute user to browse leaderboards -
+
     event.preventDefault();
   }
 
@@ -187,7 +190,6 @@ class SignUpBody extends Component {
             <FormControl value={this.state.password} onChange={this.handleChange} name="password" type="password" />
           </FormGroup>
 
-          
 
           <hr />
           <h2> Location </h2>
@@ -206,7 +208,6 @@ class SignUpBody extends Component {
             </FormControl>
           </FormGroup>
 
-
           <FormGroup controlId="state" bsSize="large" >
             <ControlLabel>State</ControlLabel>
             <FormControl componentClass="select" name="state"  value={this.state.state} onChange={this.handleChange}>
@@ -215,7 +216,6 @@ class SignUpBody extends Component {
               })}
             </FormControl>
           </FormGroup>
-
 
           <FormGroup controlId="country" bsSize="large" >
             <ControlLabel>Country</ControlLabel>
@@ -226,18 +226,11 @@ class SignUpBody extends Component {
             </FormControl>
           </FormGroup>
 
-          
-
           <hr />
-
           <Button block bsSize="large" disabled={!this.validateForm()} type="submit" >
             Sign Up!
           </Button>
-
         </form>
-
-
-
 
       </div>
     );
@@ -246,9 +239,11 @@ class SignUpBody extends Component {
   }
 }
 
+//*** Not setting the new userID in the cookie
+//ER_DUP_ENTRY: Duplicate entry '5-4' for key 'PRIMARY'
+
 
 //write to the actual cookie
-//updateCookie = (convertedData) => {
 function updateCookie(convertedData) {
     const cookies = new Cookies();
     cookies.set('userID', convertedData.userID, { path: '/' });
