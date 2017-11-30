@@ -2,7 +2,9 @@
 const express = require('express');
 var router = express.Router();
 var http = require('https');  // protocol
-var url = require('url')
+var url = require('url');
+const { URL, URLSearchParams } = require('url');
+
 const morgan = require('morgan');
 const path = require('path');
 const app = express();
@@ -20,7 +22,6 @@ var APIs = require("./APIs.js");
 var bodyParser = require('body-parser');
 
 // New Code
-var qs = require('querystring');
 let connection;
 
 
@@ -100,18 +101,17 @@ app.post('/signup',(req,res) =>{
 /* Handle get login requests from the client */
 //***TO DO - generate new token and assign here as well - return it to user and update his local cookie
 app.get('/login',(req,res) =>{
-  console.log("URL: "+ req.url );
+  console.log("URL: "+ req.url ); //Starting URL: /login?username=gablergab&email=dude%40wpi.edu
 
   //parse our url to get the fields we want
-  //Starting URL: /login?username=gablergab&email=dude%40wpi.edu
-  var uri = req.url.replace("/login?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
-  var uri = uri.replace(/email=/i, ''); //strip out the email and password name fields
-  var uri = uri.replace(/password=/i, ''); //strip out the email and password name fields
+  let uri = req.url.replace("/login?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+   uri = uri.replace(/email=/i, ''); //strip out the email and password name fields
+   uri = uri.replace(/password=/i, ''); //strip out the email and password name fields
   //gablergab&dude%40wpi.edu
-  var uri = uri.split('&'); //now we have an array of the email and password
+  let uriSplit = uri.split('&'); //now we have an array of the email and password
   //Desired, variables holding individual strings
-  var email=uri[0].replace(/%40/i, '@'); //conver this back to %40
-  var password=uri[1];
+  var email=uriSplit[0].replace(/%40/i, '@'); //conver this back to %40
+  var password=uriSplit[1];
   console.log("email = "+email+", password = "+password);
 
   //attempt to login, if success, then assign new token
@@ -123,6 +123,26 @@ app.get('/login',(req,res) =>{
     console.log("Failed to login: "+reason); // Error!
   });
 });
+
+/** VoteForBoard
+ * The user is on the browser page and has clicked vote on a board that isnt implemented yet
+ * Insert this vote to our database for feedback on user preferances
+ */
+app.post('/VoteForBoard',(req,res) =>{
+    console.log("URL: "+ req.url );
+    let boardID=req.body.boardID;
+    let userID=req.body.userID;
+    console.log("boardID: "+ boardID +" userID: "+ userID);
+
+    var p1 = SQL.voteForBoard(connection, boardID, userID);
+    p1.then(function(data) {
+        console.log("Vote inserted successfully: "+ data);
+        res.status(200).end("Good");
+    }, function(reason) {
+        console.log("fail: "+reason); // Error!
+    });
+});
+
 
 
 //Fetch the instagram access token and basic user data - still need ot fetch actual data

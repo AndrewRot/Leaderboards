@@ -265,8 +265,6 @@ function updateCookie(convertedData) {
     console.log(document.cookie);
 }
 
-
-
 export default SignUpBody;
 
 

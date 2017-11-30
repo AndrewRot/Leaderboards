@@ -203,12 +203,33 @@ module.exports = {
         })
     },
 
-    /**
-     *
+    /** getBoardStats
+     * when a board is selected on the leaderboards page form the drop down - auto populate the stat type drop down
      */
     getBoardStats: function (connection, boardID) {
         return new Promise(function (success, fail) {
             var query = "Select DISTINCT scoreID, scoreName from Scores S where S.boardID = "+boardID + "  ";
+            console.log("QUERY: " +query);
+            connection.query(query, function (err, rows, fields) {
+                if (err) throw err
+                console.log('Fetched board statTypes: ', JSON.stringify(rows));
+                success(rows); //first argument must be a string or buffer
+            })
+        })
+    },
+
+    /** voteForBoard
+     *  Insert the vote for the board
+     * @param connection
+     * @param boardID - board voted for
+     * @param userID - user voting for the board
+     * @returns {Promise}
+     */
+    voteForBoard: function (connection, boardID, userID) {
+        return new Promise(function (success, fail) {
+            //var query = "Select DISTINCT scoreID, scoreName from Scores S where S.boardID = "+boardID + "  ";
+            var query = "insert IGNORE into BoardVotes values(" + userID + "," + boardID + ");";
+
             console.log("QUERY: " +query);
             connection.query(query, function (err, rows, fields) {
                 if (err) throw err

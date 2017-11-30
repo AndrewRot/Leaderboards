@@ -5,6 +5,8 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/app.js" afterPath="$PROJECT_DIR$/server/app.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/sqlHelpers.js" afterPath="$PROJECT_DIR$/server/sqlHelpers.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Database/initDatabase.sql" afterPath="$PROJECT_DIR$/src/Database/initDatabase.sql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/browse/BrowseBody.jsx" afterPath="$PROJECT_DIR$/src/components/browse/BrowseBody.jsx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/login/SignUpBody.jsx" afterPath="$PROJECT_DIR$/src/components/login/SignUpBody.jsx" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -19,21 +21,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="541">
-              <caret line="204" column="5" lean-forward="false" selection-start-line="204" selection-start-column="5" selection-end-line="204" selection-end-column="5" />
+            <state relative-caret-position="309">
+              <caret line="139" column="36" lean-forward="false" selection-start-line="139" selection-start-column="36" selection-end-line="139" selection-end-column="36" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sqlHelpers.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/sqlHelpers.js">
+      <file leaf-file-name="BrowseBody.jsx" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/components/browse/BrowseBody.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="218" column="6" lean-forward="false" selection-start-line="218" selection-start-column="6" selection-end-line="218" selection-end-column="6" />
+            <state relative-caret-position="1275">
+              <caret line="85" column="3" lean-forward="true" selection-start-line="85" selection-start-column="3" selection-end-line="85" selection-end-column="3" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="initDatabase.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Database/initDatabase.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="34" column="16" lean-forward="true" selection-start-line="34" selection-start-column="16" selection-end-line="34" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -42,21 +56,26 @@
       <file leaf-file-name="SignUpBody.jsx" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/login/SignUpBody.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="98" column="40" lean-forward="false" selection-start-line="98" selection-start-column="40" selection-end-line="98" selection-end-column="40" />
+            <state relative-caret-position="3372">
+              <caret line="266" column="0" lean-forward="false" selection-start-line="266" selection-start-column="0" selection-end-line="266" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="InstagramRedirect.jsx" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/InstagramRedirect.jsx">
+      <file leaf-file-name="default.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/images/UserProfilePics/default.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sqlHelpers.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/sqlHelpers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="76" column="28" lean-forward="false" selection-start-line="76" selection-start-column="28" selection-end-line="76" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#41#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="270">
+              <caret line="234" column="34" lean-forward="true" selection-start-line="234" selection-start-column="34" selection-end-line="234" selection-end-column="34" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -72,7 +91,6 @@
       <find>SQL</find>
       <find>login</find>
       <find>split</find>
-      <find>insert</find>
       <find>throw</find>
       <find>connectToC</find>
       <find>BoardAcc</find>
@@ -86,7 +104,9 @@
       <find>script</find>
       <find>signUp</find>
       <find>fetch</find>
+      <find>res.</find>
       <find>followBoard</find>
+      <find>insert</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -103,15 +123,15 @@
         <option value="$PROJECT_DIR$/src/components/Utilities.js" />
         <option value="$PROJECT_DIR$/src/components/LeaderboardBody.react.js" />
         <option value="$PROJECT_DIR$/src/components/login/SignInPage.jsx" />
-        <option value="$PROJECT_DIR$/src/Database/initDatabase.sql" />
         <option value="$PROJECT_DIR$/server/Utilities.js" />
         <option value="$PROJECT_DIR$/src/components/Account.jsx" />
         <option value="$PROJECT_DIR$/src/components/InstagramRedirect.jsx" />
         <option value="$PROJECT_DIR$/server/APIs.js" />
+        <option value="$PROJECT_DIR$/src/Database/initDatabase.sql" />
+        <option value="$PROJECT_DIR$/server/app.js" />
+        <option value="$PROJECT_DIR$/server/sqlHelpers.js" />
         <option value="$PROJECT_DIR$/src/components/browse/BrowseBody.jsx" />
         <option value="$PROJECT_DIR$/src/components/login/SignUpBody.jsx" />
-        <option value="$PROJECT_DIR$/server/sqlHelpers.js" />
-        <option value="$PROJECT_DIR$/server/app.js" />
       </list>
     </option>
   </component>
@@ -159,6 +179,24 @@
             <path>
               <item name="leaders" type="b2602c69:ProjectViewProjectNode" />
               <item name="leaders" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="leaders" type="b2602c69:ProjectViewProjectNode" />
+              <item name="leaders" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="images" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="leaders" type="b2602c69:ProjectViewProjectNode" />
+              <item name="leaders" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="images" type="462c0819:PsiDirectoryNode" />
+              <item name="UserProfilePics" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="leaders" type="b2602c69:ProjectViewProjectNode" />
+              <item name="leaders" type="462c0819:PsiDirectoryNode" />
               <item name="server" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -177,7 +215,20 @@
               <item name="leaders" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="components" type="462c0819:PsiDirectoryNode" />
-              <item name="login" type="462c0819:PsiDirectoryNode" />
+              <item name="browse" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="leaders" type="b2602c69:ProjectViewProjectNode" />
+              <item name="leaders" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="leaderboard" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="leaders" type="b2602c69:ProjectViewProjectNode" />
+              <item name="leaders" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Database" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -214,12 +265,12 @@
       <option name="presentableId" value="Default" />
       <updated>1511123707454</updated>
       <workItem from="1511123708792" duration="492000" />
-      <workItem from="1511208485273" duration="44398000" />
+      <workItem from="1511208485273" duration="50600000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="44890000" />
+    <option name="totallyTimeSpent" value="51092000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="493" y="91" width="1161" height="950" extended-state="0" />
@@ -349,14 +400,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Database/initDatabase.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="24" column="24" lean-forward="false" selection-start-line="24" selection-start-column="24" selection-end-line="24" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/DatabaseUtility.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-51">
@@ -369,14 +412,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/browse/BrowseBody.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3693">
-          <caret line="253" column="96" lean-forward="true" selection-start-line="253" selection-start-column="77" selection-end-line="253" selection-end-column="96" />
           <folding />
         </state>
       </provider>
@@ -467,16 +502,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/InstagramRedirect.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="76" column="28" lean-forward="false" selection-start-line="76" selection-start-column="28" selection-end-line="76" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/routes.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -493,27 +518,80 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/login/SignUpBody.jsx">
+    <entry file="file://$PROJECT_DIR$/public/images/boardLogos/netflix.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/boardLogos/starbucks.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/InstagramRedirect.jsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="98" column="40" lean-forward="false" selection-start-line="98" selection-start-column="40" selection-end-line="98" selection-end-column="40" />
+        <state relative-caret-position="160">
+          <caret line="76" column="28" lean-forward="false" selection-start-line="76" selection-start-column="28" selection-end-line="76" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="139" column="36" lean-forward="false" selection-start-line="139" selection-start-column="36" selection-end-line="139" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/leaderboard/LeaderboardBody.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="157" column="18" lean-forward="false" selection-start-line="157" selection-start-column="12" selection-end-line="157" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Database/initDatabase.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="34" column="16" lean-forward="true" selection-start-line="34" selection-start-column="16" selection-end-line="34" selection-end-column="16" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/sqlHelpers.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="218" column="6" lean-forward="false" selection-start-line="218" selection-start-column="6" selection-end-line="218" selection-end-column="6" />
+        <state relative-caret-position="270">
+          <caret line="234" column="34" lean-forward="true" selection-start-line="234" selection-start-column="34" selection-end-line="234" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/app.js">
+    <entry file="file://$PROJECT_DIR$/src/components/login/SignUpBody.jsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="541">
-          <caret line="204" column="5" lean-forward="false" selection-start-line="204" selection-start-column="5" selection-end-line="204" selection-end-column="5" />
+        <state relative-caret-position="3372">
+          <caret line="266" column="0" lean-forward="false" selection-start-line="266" selection-start-column="0" selection-end-line="266" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/UserProfilePics/default.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/browse/BrowseBody.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1275">
+          <caret line="85" column="3" lean-forward="true" selection-start-line="85" selection-start-column="3" selection-end-line="85" selection-end-column="3" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Grid, Col, Thumbnail, Button,FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import {Grid, Col, Row, Panel, Thumbnail, Button,FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import $ from 'jquery';
 import './css/BrowseBody.css';
 import Modal from 'react-modal';
@@ -65,7 +65,6 @@ class BrowseBody extends Component {
 
     //const boardID = this.state.boardID;
     const url = "http://localhost:9000/ConnectToCustomAPI/"+boardID;
-
       if (typeof(Storage) !== "undefined") {
           // Code for localStorage/sessionStorage.
           console.log("Code for localStorage/sessionStorage.");
@@ -85,6 +84,14 @@ class BrowseBody extends Component {
         //this.setState({modalBody: data});
     });
   }
+  voteForBoard(boardID, userID, event) {
+    const url = "http://localhost:9000/VoteForBoard/";
+    $.post(url,{boardID: boardID, userID: userID}, function(data){
+
+        alert("Thank you for the feedback! ");
+        //window.location = data;
+    });
+  }
 
   
   openModal(boardID, boardName, boardImageURL, event) {
@@ -98,9 +105,6 @@ class BrowseBody extends Component {
     this.setState({boardID: boardID});
     this.setState({boardName: boardName});
     this.setState({boardImageURL: boardImageURL});
-
-
-    //this.setState({modalBody: getNormalModal()})
   }
   afterOpenModal() {
     this.subtitle.style.color = '#f00';    // references are now sync'd and can be accessed.
@@ -147,20 +151,6 @@ class BrowseBody extends Component {
         //"would you like to view your ranking?"
     });
 
-
-    /* THEN post the updates to the database **** need to add authentication token for respective websites
-    const userid = getCookie("userid");//this.state.user; ------ Not secure at all. do a get form the DB to get userinfo
-
-    const boardClicked = event.target.name;
-    console.log("userid: "+ userid + " boardClicked: "+boardClicked);
-
-    //Successful posts and gets with jquery! WORKING
-    $.post("http://localhost:9000/followboard",{ userid: userid, board: boardClicked}, function(data){
-        alert("You added "+data+" to "+userid+" profile! : ");
-        //*****navigate the user to this board now!
-    });
-
-*/
     //***** Update this later so that it goes to the second page of sign up stuff
     //window.location="/Browse"; //reroute user to browse leaderboards -
     event.preventDefault();
@@ -177,86 +167,125 @@ class BrowseBody extends Component {
 
   render() {
 
-    let boards = this.state.boards;
 
-    let modalBody = this.state.modalBody;
+    let boards = this.state.boards; //all of the boards returned from the server
+
+    //let modalBody = this.state.modalBody;
+
+    //Split up boards into two groups - boards that have already been implemented and then ones to be implemented
+      let implementedBoards =  boards.filter(board => board.implemented  == 'Y');
+      let unimplementedBoards =  boards.filter(board => board.implemented  == 'N');
+
+
 
     return (
       <div className="class">
 
       <Modal
-          isOpen={this.state.modalIsOpen}
-          onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeModal}
-          
-          contentLabel="Example Modal"  >
+      isOpen={this.state.modalIsOpen}
+      onAfterOpen={this.afterOpenModal}
+      onRequestClose={this.closeModal}
+      contentLabel="Example Modal"  >
+      <div>
+        <h2 ref={subtitle => this.subtitle = subtitle}>Sign in with {this.state.boardName}</h2>
 
-          <div>
-            <h2 ref={subtitle => this.subtitle = subtitle}>Sign in with {this.state.boardName}</h2>
-          
-            <Thumbnail class="modal"  >
-           
-              <form name={this.state.boardID} onSubmit={this.handleSubmit} class="form"  >
-                <FormGroup controlId="email" bsSize="large" >
-                  <ControlLabel>Email</ControlLabel>
-                  <FormControl
-                    autoFocus
-                    name="email"
-                    type="text"
-                    value={this.state.email}
-                    onChange={this.handleChange} />
-                </FormGroup>
-                <FormGroup controlId="password" bsSize="large">
-                  <ControlLabel>Password</ControlLabel>
-                  <FormControl
-                    value={this.state.password}
-                    onChange={this.handleChange}
-                    name="password"
-                    type="password" />
-                </FormGroup>
-               
-                <Button block bsSize="large"  type="submit" >
-                  Login
-                </Button>
-              </form>
-            
-            </Thumbnail>
-           </div>
-            
-        </Modal>
+        <Thumbnail class="modal"  >
+          <form name={this.state.boardID} onSubmit={this.handleSubmit} class="form"  >
+            <FormGroup controlId="email" bsSize="large" >
+              <ControlLabel>Email</ControlLabel>
+              <FormControl
+                autoFocus
+                name="email"
+                type="text"
+                value={this.state.email}
+                onChange={this.handleChange} />
+            </FormGroup>
+            <FormGroup controlId="password" bsSize="large">
+              <ControlLabel>Password</ControlLabel>
+              <FormControl
+                value={this.state.password}
+                onChange={this.handleChange}
+                name="password"
+                type="password" />
+            </FormGroup>
 
+            <Button block bsSize="large"  type="submit" >
+              Login
+            </Button>
+          </form>
+        </Thumbnail>
+       </div>
+    </Modal>
+
+
+    <Grid>
+        <Row className="show-grid">
+            <Panel header="Leaderboards are available for the following apps">
+
+                {implementedBoards.map(function(board, i){
+                    let boardID = board.boardID;
+                    let boardName = board.name;
+                    let boardImageURL = board.imgURL;
+                    let requiresSeperateAuthModal = board.requiresSeperateAuthModal;
+                    let boundClick;
+
+                    //Determine what modal to open, our own or the given one from the given website.
+                    if(requiresSeperateAuthModal === 'N'){
+                        //create a variable set to a function - this allows use to pass multiple vars to the method
+                        boundClick = this.openModal.bind(this, boardID, boardName, boardImageURL);
+                    } else {
+                        //send connection request to the specificed API that requires we use their login modal
+                        boundClick = this.openCustomModal.bind(this, boardID);
+                    }
+
+                    return (
+                        <Col xs={6} md={4}>
+                            <Thumbnail src={board.imgURL} alt="242x200" >
+                                <hr />
+                                <h3>{board.name}</h3>
+                                <p>{board.description}</p>
+                                <p>
+                                    <Button bsStyle="primary" name={board.boardID} block onClick={boundClick}>Connect</Button>
+                                </p>
+                            </Thumbnail>
+                        </Col>
+                    )
+                }, this)}
+
+
+            </Panel>
+        </Row>
+        <Row>
+            <Panel header="What apps are you interested in seeing leaderboards for?">
+
+                {unimplementedBoards.map(function(board, i){
+                    let boardID = board.boardID;
+                    let userID = getCookie('userID'); //DANGER!!! - update to token!! this is not secure if user is playing with token
+                    //let boardName = board.name;
+                    //let boardImageURL = board.imgURL;
+                    let boundClick = this.voteForBoard.bind(this, boardID, userID) ;
+
+                    return (
+                        <Col xs={6} md={4}>
+                            <Thumbnail src={board.imgURL} alt="242x200" >
+                                <hr />
+                                <h3>{board.name}</h3>
+                                <p>{board.description}</p>
+                                <p>
+                                    <Button bsStyle="primary" name={board.boardID} block onClick={boundClick}>Vote</Button>
+                                </p>
+                            </Thumbnail>
+                        </Col>
+                    )
+                }, this)}
+            </Panel>
+
+        </Row>
+    </Grid>
 
 
           <Grid>
-          {boards.map(function(board, i){
-            let boardID = board.boardID;
-            let boardName = board.name;
-            let boardImageURL = board.imgURL;
-            let requiresSeperateAuthModal = board.requiresSeperateAuthModal;
-            let boundClick;
 
-            //Determine what modal to open, our own or the given one from the given website.
-            if(requiresSeperateAuthModal === 'N'){
-              //create a variable set to a function - this allows use to pass multiple vars to the method
-              boundClick = this.openModal.bind(this, boardID, boardName, boardImageURL); 
-            } else {
-              //send connection request to the specificed API that requires we use their login modal
-              boundClick = this.openCustomModal.bind(this, boardID);
-            }
-
-            return (
-              <Col xs={6} md={4}>
-                <Thumbnail src={board.imgURL} alt="242x200" >
-                
-                  <h3>{board.name}</h3>
-                     <p>{board.description}</p>
-                      <p>
-                        <Button bsStyle="primary" name={board.boardID} block onClick={boundClick}>Connect</Button>
-                      </p>
-                   </Thumbnail>
-                </Col>
-                )
-              }, this)}
           </Grid>
 
 
@@ -299,6 +328,38 @@ https://3fybkfrr10x3tgp41p45lr3a-wpengine.netdna-ssl.com/wp-content/uploads/2016
 <option value={name}>{name}</option>
 
 
+
+  <Grid>
+          {boards.map(function(board, i){
+            let boardID = board.boardID;
+            let boardName = board.name;
+            let boardImageURL = board.imgURL;
+            let requiresSeperateAuthModal = board.requiresSeperateAuthModal;
+            let boundClick;
+
+            //Determine what modal to open, our own or the given one from the given website.
+            if(requiresSeperateAuthModal === 'N'){
+              //create a variable set to a function - this allows use to pass multiple vars to the method
+              boundClick = this.openModal.bind(this, boardID, boardName, boardImageURL);
+            } else {
+              //send connection request to the specificed API that requires we use their login modal
+              boundClick = this.openCustomModal.bind(this, boardID);
+            }
+
+            return (
+              <Col xs={6} md={4}>
+                <Thumbnail src={board.imgURL} alt="242x200" >
+
+                  <h3>{board.name}</h3>
+                     <p>{board.description}</p>
+                      <p>
+                        <Button bsStyle="primary" name={board.boardID} block onClick={boundClick}>Connect</Button>
+                      </p>
+                   </Thumbnail>
+                </Col>
+                )
+              }, this)}
+          </Grid>
 
 
 */

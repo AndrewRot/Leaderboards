@@ -37,13 +37,17 @@ create table Boards(
 	description varchar(100),
 	imgURL varchar(50),
 	requiresSeperateAuthModal varchar(1) NOT NULL CHECK (requiresSeperateAuthModal IN ('N', 'Y')),
+	implemented varchar(1),
 	PRIMARY KEY (boardID)
 );
-insert into Boards values(1, 'Fantasy Soccer', 'Fantasy soccer, goals, assists, other stats', '/images/boardLogos/fantasysoccer.png', 'N');
-insert into Boards values(2, 'Netflix', 'Netflix movies watched', '/images/boardLogos/netflix.png', 'N');
-insert into Boards values(3, 'Github', 'Open source domination', '/images/boardLogos/github.png', 'N');
-insert into Boards values(4, 'Instagram', 'Social media stats', '/images/boardLogos/instagram.png', 'Y');
-
+insert into Boards values(1, 'Fantasy Soccer', 'Fantasy soccer stats', '/images/boardLogos/fantasysoccer.png', 'N', 'N');
+insert into Boards values(2, 'Netflix', 'Netflix movies watched', '/images/boardLogos/netflix.png', 'N', 'N');
+insert into Boards values(3, 'Github', 'Open source domination', '/images/boardLogos/github.png', 'N', 'Y');
+insert into Boards values(4, 'Instagram', 'Social media stats', '/images/boardLogos/instagram.png', 'Y', 'Y');
+insert into Boards values(5, 'Starbucks', 'Reward point rankings', '/images/boardLogos/starbucks.png', 'N', 'N');
+insert into Boards values(6, 'Spotify', 'Music related stats', '/images/boardLogos/spotify.png', 'N', 'N');
+insert into Boards values(7, 'YouTube', 'Video related stats', '/images/boardLogos/youtube.png', 'N', 'N');
+insert into Boards values(8, 'FitBit', 'Athletic related stats', '/images/boardLogos/fitbit.png', 'N', 'N');
 
 
 create table BoardAccountLink(
@@ -110,21 +114,20 @@ insert into Scores values(2, 4, 2, 40, 'TV Shows Watched', '2017-09-21');
 insert into Scores values(3, 1, 1, 0, 'Followers', '2017-08-31' );
 
 
+/* Voting table, when users vote for future boards, store it here */
+create table BoardVotes(
+	boardID int ,
+	userID int ,
+	PRIMARY KEY (userID, boardID)
+);
 
 
-
-
-select * 
-from Accounts;
-
-select * 
-from Boards;
-
-select * 
-from BoardAccountLink;
-
-select * 
-from Scores;
+/* Show tables and data after running init script */
+select * from Accounts;
+select * from Boards;
+select * from BoardAccountLink;
+select * from Scores;
+select * from BoardVotes;
 
 
 /*
