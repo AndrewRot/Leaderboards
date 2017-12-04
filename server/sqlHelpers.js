@@ -254,6 +254,23 @@ module.exports = {
         })
     },
 
+    confirmSignedIn: function(connection, token, userID){
+        return new Promise(function(success, fail) {
+            var query = "Select userID, firstname, lastname, username, email, city, state, country from Accounts where token = '"+ token + "' and userID = "+userID+" ;";
+            connection.query(query, function (err, rows, fields) {
+                //If there is no match in the database - return a link to the login screen
+                if (err) {
+                    throw err
+                    fail("/login");
+                }
+                //if successful, return the data from the database
+                success(rows);
+
+
+            })
+        })
+    },
+
     /** login
      * Attempts to log a user in. If successful, assigns the user a new Token, updates it in the database, then we requery to get the full set of data to return to the client
      * @param {Connection} connection: the connection to the database 

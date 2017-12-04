@@ -108,10 +108,16 @@ class LeaderboardBody extends Component {
 
   //Load up the user's boards at the beginning
   componentWillMount() {
-    const userid = getCookie("userID"); //convert to using token
-    console.log("userID: "+userid)
+      let userID = 0;
+      console.log("userID: "+userID);
+     userID = getCookie("userID"); //convert to using token
+    console.log("userID: "+userID); //if userID = 0, fetch all boards
+      if(userID == "")
+          userID = 0;
+      console.log("userID: "+userID);
 
-    $.get("http://localhost:9000/getmyboardinfo",{userid: userid}, (data, status) => {
+
+    $.get("http://localhost:9000/getmyboardinfo",{userid: userID}, (data, status) => {
           //now assign this to the proper variables in react component
           console.log("Response from server was ["+status+"] and the data:  " + data);
           

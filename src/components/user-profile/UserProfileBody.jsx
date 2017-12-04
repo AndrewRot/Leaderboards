@@ -37,16 +37,16 @@ class UserProfileBody extends Component {
   //Probably want to fetch this user's board info here - too much info to keep in a cookie
   //-Create a token and assign it to a user - have them send that token as identification,
   //-if it matches the token in the database for that user, then authenticate them.
-  /*componentWillMount() {
-    const email = getCookie("email");
-    const password = getCookie("password");
+  componentWillMount() {
+    const token = getCookie("token");
+    const userID = getCookie("userID");
 
-    $.get("http://localhost:9000/login",{email: email, password: password}, (data, status) => {
+    $.get("http://localhost:9000/confirmSignedIn",{token: token, userID: userID}, (data, status) => {
           //now assign this to the proper variables in react component
           console.log("Response from server was ["+status+"] and the data:  " + data);
           
           //convert response to js object
-          const convertedData = JSON.parse(data);
+          /*const convertedData = JSON.parse(data);
           console.log("Found data for : "+ convertedData.username);
 
           //write to our cookie!
@@ -59,14 +59,23 @@ class UserProfileBody extends Component {
           this.setState({username: convertedData.username});
           this.setState({email: convertedData.email});
           this.setState({boards: convertedData.boards}); //this might not be OK - might wanna just save boards in the cookie
+*/
+        if(status == 302) {
+            console.log("PLEASE LOG IN");
+            window.location = data;
+        } else if(status == 200) {
+            console.log("All set! *** FILL in state vars here");
+            //
+            //window.location = data;
+        }
     });
   }
-*/
+
 
   render() {
     let USERNAME = getCookie("username");
-    let FIRSTNAME = getCookie("firstName");
-    let LASTNAME = getCookie("lastName");
+    let FIRSTNAME = getCookie("firstname");
+    let LASTNAME = getCookie("lastname");
     let EMAIL = getCookie("email");
 
     let CITY = getCookie("city");

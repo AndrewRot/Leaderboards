@@ -122,6 +122,36 @@ class SignUpBody extends Component {
   componentWillMount() {
     console.log("Init page");
     //window.checkLoginState();
+      const token = getCookie("token");
+      const userID = getCookie("userID");
+
+      $.get("http://localhost:9000/confirmSignedIn",{token: token, userID: userID}, (data, status) => {
+          //now assign this to the proper variables in react component
+          console.log("Response from server was ["+status+"] and the data:  " + data);
+
+          //convert response to js object
+          /*const convertedData = JSON.parse(data);
+          console.log("Found data for : "+ convertedData.username);
+
+          //write to our cookie!
+          updateCookie(convertedData);
+          console.log(document.cookie);
+
+          //Updating component state values
+          this.setState({first: convertedData.first});
+          this.setState({last: convertedData.last});
+          this.setState({username: convertedData.username});
+          this.setState({email: convertedData.email});
+          this.setState({boards: convertedData.boards}); //this might not be OK - might wanna just save boards in the cookie
+*/
+          if(status == 302) {
+              console.log("PLEASE LOG IN");
+              window.location = data;
+          } else if(status == 200) {
+              console.log("All set! *** FILL in state vars here");
+              //window.location="/User/";
+          }
+      });
   }
 
 
@@ -241,6 +271,26 @@ class SignUpBody extends Component {
 
 //*** Not setting the new userID in the cookie
 //ER_DUP_ENTRY: Duplicate entry '5-4' for key 'PRIMARY'
+
+function getCookie(cname) {
+    //console.log("Looking in cookie for: "+cname);
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            var str = c.substring(name.length, c.length);
+            //console.log("found it: "+str);
+            return str;
+        }
+    }
+    //console.log("Did not find it");
+    return "";
+}
 
 
 //write to the actual cookie

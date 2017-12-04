@@ -30,8 +30,11 @@ class MainSignOut extends Component {
      //if logged in, log them out, delete their cookie info / future, destroy token here and on server
     if (isLoggedIn) { //**** In the future we will perform  a system token authenitcation. grabbing the cookie's token and check to see if it's still alive on our server
     	console.log("Signing Out ");
-      document.cookie = "loggedin=false";
-      //refresh the page, it will now load out user profile
+      //document.cookie = "loggedin=false";
+
+        //document.cookie = "Expires=Thu, 01 Jan 1970 00:00:01 GMT";
+        eraseCookie();
+        //refresh the page, it will now load out user profile
       window.location="/User";
     	
       return (
@@ -43,7 +46,9 @@ class MainSignOut extends Component {
     //Not signed in - render sign in page
     else {
     	console.log("Not looged in, but redirecting ");
-      document.cookie = "loggedin=false";
+    	eraseCookie()
+      //document.cookie = "loggedin=false";
+        //document.cookie = "Expires=Thu, 01 Jan 1970 00:00:01 GMT";
       //refresh the page, it will now load out user profile
       window.location="/User";
       
@@ -54,6 +59,21 @@ class MainSignOut extends Component {
     }
 
   }
+}
+
+export function eraseCookie(){
+    document.cookie = "loggedin=false";
+    document.cookie = "userID=0";
+    document.cookie = "firstname=";
+    document.cookie = "lastname=";
+    document.cookie = "username=";
+    document.cookie = "email=";
+    document.cookie = "city=";
+    document.cookie = "state=";
+    document.cookie = "country=";
+    document.cookie = "token=";
+    document.cookie = "country=";
+    document.cookie = "Expires=Thu, 01 Jan 1970 00:00:01 GMT";
 }
 
 

@@ -64,6 +64,9 @@ class SignInPage extends Component {
   }
 
   render() {
+
+
+
       return (
         <div>
           <h1> Sign in </h1>
@@ -106,9 +109,9 @@ function updateCookie(convertedData) {
   cookies.set('lastname', convertedData.lastname, { path: '/' });
   cookies.set('username', convertedData.username, { path: '/' });
   cookies.set('email', convertedData.email.replace(/%40/i, '@'), { path: '/' });
-  cookies.set('city', convertedData.city.replace(/%20/i, ' '), { path: '/' });
-  cookies.set('state', convertedData.state.replace(/%20/i, ' '), { path: '/' });
-  cookies.set('country', convertedData.country.replace(/%20/i, ' '), { path: '/' });
+  cookies.set('city', convertedData.city.replace(/%20/i, '@'), { path: '/' });
+  cookies.set('state', convertedData.state.replace(/%20/i, '@'), { path: '/' });
+  cookies.set('country', convertedData.country.replace(/%20/i, '@'), { path: '/' });
   cookies.set('token', convertedData.token, { path: '/' });
   cookies.set('loggedin', true, { path: '/' });
 

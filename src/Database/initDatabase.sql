@@ -25,6 +25,7 @@ create table Accounts(
 	PRIMARY KEY (userID)
 );
 /* insert into Accounts values(1, 'Andrew', 'Rottier', 'acrottier', 'andrewrottier95@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123', '45481514.14054d3.d69d14db497c4f7fab63a4cb5104fa3b', '45481514', 'andrewrottier'); */
+insert into Accounts values(0, '', '', '', '', 'fortress3', '', '', '', '', '', '', '');
 insert into Accounts values(1, 'Andrew', 'Rottier', 'acrottier', 'andrewrottier95@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123', '', '', '');
 insert into Accounts values(2, 'Harry', 'Kane', 'hkane', 'kane@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123', '', '', '');
 insert into Accounts values(3, 'Berny', 'Sanders', 'bsanders', 'sanders@gmail.com', 'password', 'Worcester', 'MA', 'United States', '123', '', '', '');
@@ -58,6 +59,17 @@ create table BoardAccountLink(
 	CONSTRAINT fk_B_boardID FOREIGN KEY (boardID) REFERENCES Boards(boardID)
 );
 /* Add all 3 users to the first board */
+insert into BoardAccountLink values(0, 1);
+insert into BoardAccountLink values(0, 2);
+insert into BoardAccountLink values(0, 3);
+insert into BoardAccountLink values(0, 4);
+insert into BoardAccountLink values(0, 5);
+insert into BoardAccountLink values(0, 6);
+insert into BoardAccountLink values(0, 7);
+insert into BoardAccountLink values(0, 8);
+
+
+
 insert into BoardAccountLink values(1, 1);
 insert into BoardAccountLink values(1, 2);
 insert into BoardAccountLink values(1, 3); 

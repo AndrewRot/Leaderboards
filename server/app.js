@@ -96,10 +96,32 @@ app.post('/signup',(req,res) =>{
 
 
 
+app.get('/confirmSignedIn',(req,res) =>{
+    console.log("URL: "+ req.url );
+
+    //parse our url to get the fields we want
+    let uri = req.url.replace("/confirmSignedIn?", ''); //strip out the path  //username=gablergab&email=dude%40wpi.edu
+    uri = uri.replace(/token=/i, ''); //strip out the email and password name fields
+    uri = uri.replace(/userID=/i, ''); //strip out the email and password name fields
+    //gablergab&dude%40wpi.edu
+    let uriSplit = uri.split('&'); //now we have an array of the email and password
+    //Desired, variables holding individual strings
+    var token=uriSplit[0];
+    var userID=uriSplit[1];
+    console.log("token = "+token+", userID = "+userID);
+
+    //attempt to login, if success, then assign new token
+    var p1 = SQL.confirmSignedIn(connection, token, userID);
+    p1.then(function(data) { // User succesfully logged in!
+        //console.log('User Info: ', JSON.stringify(data));
+        res.status(200).end(JSON.stringify(data));
+    }, function(reason) {
+        console.log("Failed to login: "+reason); // Error!
+    });
+});
 
 
 /* Handle get login requests from the client */
-//***TO DO - generate new token and assign here as well - return it to user and update his local cookie
 app.get('/login',(req,res) =>{
   console.log("URL: "+ req.url ); //Starting URL: /login?username=gablergab&email=dude%40wpi.edu
 
@@ -118,7 +140,7 @@ app.get('/login',(req,res) =>{
   var p1 = SQL.login(connection, email, password);
   p1.then(function(data) { // User succesfully logged in! 
     //console.log('User Info: ', JSON.stringify(data));
-    res.status(200).end(JSON.stringify(data)); 
+    res.status(200).end(JSON.stringify(data));
   }, function(reason) {
     console.log("Failed to login: "+reason); // Error!
   });
@@ -199,6 +221,9 @@ app.get('/getmyboardinfo',(req,res) =>{
    uri = uri.replace(/userid=/i, ''); //strip out the email and password name fields
   //gablergab&dude%40wpi.edu
   let userID=uri;  //Desired, variables holding individual strings
+    if(userID=="")
+        userID = 0;
+    console.log("userID"+ userID );
 
   var p1 = SQL.getMyBoardInfo(connection, userID);
   p1.then(function(myBoardInfo) {
@@ -316,7 +341,7 @@ app.get('/connectto/*',(req,res) =>{
   let uriSplit1 = uri.split('?');//break into [#, username=XXX&password=XXX]
   let boardID = uriSplit1[0]; //first element is the boardID
 
-  let uriSplit = uriSplit[1].split('&'); //now we have an array of the email and password
+  let uriSplit = uriSplit1[1].split('&'); //now we have an array of the email and password
 //Desired, variables holding individual strings
   let userID=uriSplit[0];
   let email=uriSplit[1].replace(/%40/i, '@'); //conver this back to @ from %40

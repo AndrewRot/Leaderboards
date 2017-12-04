@@ -6,6 +6,7 @@ import App from './App';
 import MainBrowse from './components/browse/MainBrowse';
 import MainLeaderboard from './components/leaderboard/MainLeaderboard';
 import MainUserProfile from './components/user-profile/MainUserProfile';
+
 import Account from './components/Account';
 
 //These were created from last pull request
@@ -23,6 +24,7 @@ const Routes = (props) => (
       <Route path="/LeaderboardMain" component={MainLeaderboard} />
       <Route path="/Browse" component={MainBrowse} />
       <Route path="/User" component={MainUserProfile} />
+      <Route path="/Login" component={MainUserProfile} />
       <Route path="/SignUp" component={MainSignUpContainer} />
       <Route path="/SignOut" component={MainSignOutContainer} />
       <Route path="/AuthInstagram" component={AuthInstagram} />
