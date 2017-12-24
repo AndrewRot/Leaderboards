@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Thumbnail, Button, Carousel, Media} from 'react-bootstrap';
+import { Row, Grid, Col, Thumbnail, Button, Carousel, Media} from 'react-bootstrap';
 import mainpic from '../images/leadertemp.png';
 import './css/HomePageBody.css';
 
@@ -35,7 +35,7 @@ class HomePageBody extends Component {
       <div class="jumbotron jumbotron-fluid">
         <div class="container">
           <h1 class="display-3">Welcome to Leaderboards!</h1>
-          <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+          <p class="lead">Home to hundreds to boards for apps you use every day. Get rewarded for the apps you're already using!</p>
         </div>
       </div>
 
@@ -86,6 +86,13 @@ class HomePageBody extends Component {
           <img class="media" src="/assets/thumbnail.png" alt="blank"/>
         </Media.Right>
       </Media>
+
+        <Grid>
+          <Row className="show-grid">
+            <Col md={6} mdPush={6}><code>&lt;{'Col md={6} mdPush={6}'} /&gt;</code></Col>
+            <Col md={6} mdPull={6}><code>&lt;{'Col md={6} mdPull={6}'} /&gt;</code></Col>
+          </Row>
+        </Grid>
 
       </div>
     );
