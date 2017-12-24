@@ -87,12 +87,16 @@ class HomePageBody extends Component {
         </Media.Right>
       </Media>
 
-        <Grid>
+      <hr/>
+
+        <Grid fluid >
           <Row className="show-grid">
-            <Col md={6} mdPush={6}><code>&lt;{'Col md={6} mdPush={6}'} /&gt;</code></Col>
-            <Col md={6} mdPull={6}><code>&lt;{'Col md={6} mdPull={6}'} /&gt;</code></Col>
+            <Col md={6} mdPush={6}>Leaderboards LLC.</Col>
+            <Col md={6} mdPull={6}>Created by Andrew Rottier</Col>
           </Row>
         </Grid>
+
+      <hr/>
 
       </div>
     );
