@@ -6,7 +6,7 @@
     "async": "^2.5.0",
     "asyncawait": "^1.0.6",
     "bootstrap": "^3.3.7",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "firebase": "^4.6.2",
     "jquery": "^3.2.1",
     "mongodb": "^2.2.25",
